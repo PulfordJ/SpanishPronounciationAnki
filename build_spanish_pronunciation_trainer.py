@@ -351,6 +351,26 @@ misc = [
 ]
 add_cards(deck_misc, misc, tag="misc")
 
+# ---------- Common Verbs & Phrases ----------
+deck_verbs_common = make_deck("Common Verbs & Phrases")
+verbs_common = [
+    ("to leave / to let", "dejar"),
+    ("I leave / I let", "dejo"),
+    ("I leave you a pencil", "te dejo un lápiz"),
+    ("to take / to drink", "tomar"),
+    ("take (here you go)", "toma"),
+]
+add_cards(deck_verbs_common, verbs_common, tag="verbs_common")
+
+# ---------- Math / Quantities ----------
+deck_math = make_deck("Math & Quantities")
+math_cards = [
+    ("more", "más"),
+    ("less / minus", "menos"),
+    ("nine plus one equals ten", "nueve más uno = diez"),
+]
+add_cards(deck_math, math_cards, tag="math")
+
 
 # ---------- Package ----------
 package = genanki.Package([
@@ -359,6 +379,6 @@ package = genanki.Package([
     deck_despedirse, deck_dialogue, deck_original
 ])
 
-package.write_to_file('collection-20251008135000_updated.colpkg')
-print("✅ Generated: collection-20251008135000_updated.colpkg")
+package.write_to_file('collection-20251108135000_updated.colpkg')
+print("✅ Generated: collection-20251008135001_updated.colpkg")
 print("Import into Anki → overrides old deck → move existing cards into 'Original Cards'.")
