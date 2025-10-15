@@ -227,6 +227,131 @@ dialogue = [
 ]
 add_cards(deck_dialogue, dialogue, tag="dialogue")
 
+# ---------- Classroom Objects ----------
+deck_classroom = make_deck("Classroom Objects")
+classroom_objects = [
+    ("pen", "bolígrafo"),
+    ("pencil", "lápiz"),
+    ("laptop", "portátil"),
+    ("chair", "silla"),
+    ("projector", "proyector"),
+    ("whiteboard", "pizarra blanca"),
+    ("tablet", "tableta"),
+    ("pencil case", "estuche"),
+    ("table / desk", "mesa"),
+    ("book", "libro"),
+    ("notebook", "cuaderno"),
+    ("sheet of paper", "hoja de papel"),
+    ("backpack", "mochila"),
+    ("computer (alt.)", "ordenador"),
+    ("ruler", "regla"),
+    ("scissors", "tijeras"),
+    ("calculator", "calculadora"),
+    ("eraser", "borrador"),
+    ("sharpener", "sacapuntas"),
+]
+add_cards(deck_classroom, classroom_objects, tag="classroom")
+
+# ---------- Grammar: Tener & Plurals ----------
+deck_grammar = make_deck("Grammar (Tener & Plurals)")
+grammar_cards = [
+    ("I have three coins", "yo tengo tres monedas"),
+    ("I have four things", "yo tengo cuatro cosas"),
+    ("I have a pen", "yo tengo un bolígrafo"),
+    ("I have a laptop", "yo tengo un portátil"),
+    ("I have a table", "yo tengo una mesa"),
+    ("I don’t have the books", "yo no tengo los libros"),
+    ("I don’t have a glass of water", "yo no tengo un vaso de agua"),
+    ("I don’t have the glasses", "yo no tengo las gafas"),
+    ("plural of lápiz", "lápices"),
+    ("plural of silla", "sillas"),
+    ("plural of portátil", "portátiles"),
+    ("plural of hoja de papel", "hojas de papel"),
+]
+add_cards(deck_grammar, grammar_cards, tag="grammar")
+
+# ---------- Requests & Needs ----------
+deck_requests = make_deck("Requests & Needs")
+requests = [
+    ("I like to draw with a pencil", "me gusta dibujar con un lápiz"),
+    ("Can you lend me a blue pen?", "¿me dejas un boli azul?"),
+    ("I have a yellow highlighter", "tengo un subrayador amarillo"),
+    ("This pencil has no tip", "este lápiz no tiene punta"),
+    ("I need a sharpener", "¡necesito un sacapuntas!"),
+    ("Can you lend me your eraser?", "¿me prestas tu borrador?"),
+    ("I have to look for a house", "tengo que buscar una casa"),
+    ("In maths class we use calculators", "en clase de matemáticas utilizamos calculadoras"),
+    ("I keep all my things in my backpack", "guardo todas mis cosas en mi mochila"),
+    ("In my notebook I write with a pen", "en mi cuaderno escribo con bolígrafo"),
+    ("The teacher writes on the board", "la profesora escribe en la pizarra"),
+    ("A pair of glasses", "un par de gafas"),
+    ("With a ruler you can make straight lines", "con la regla puedes hacer líneas rectas"),
+]
+add_cards(deck_requests, requests, tag="requests")
+
+# ---------- Feelings & Concepts ----------
+deck_concepts = make_deck("Feelings & Concepts")
+concepts = [
+    ("sun", "sol"),
+    ("star", "estrella"),
+    ("truth", "verdad"),
+    ("loyalty", "lealtad"),
+    ("dawn", "alborada"),
+    ("trust / confidence", "confianza"),
+    ("bat (animal)", "murciélago"),
+    ("we dance", "bailamos"),
+    ("thank you", "gracias"),
+    ("feeling", "sentimiento"),
+    ("solidarity", "la solidaridad"),
+    ("mother", "madre"),
+    ("joy / happiness", "alegría"),
+    ("lawyer", "abogado"),
+    ("football / soccer", "fútbol"),
+    ("spirit", "espíritu"),
+    ("I desire love", "deseo amor"),
+    ("to love / to want", "querer"),
+    ("male / macho", "macho"),
+    ("researcher / investigator", "investigador"),
+    ("beauty", "belleza"),
+    ("you (informal)", "tú"),
+    ("affection / darling", "cariño"),
+    ("mellifluous / sweet-sounding", "melíflua"),
+    ("I am sleepy", "yo tengo sueño"),
+    ("I have a dream", "yo tengo un sueño"),
+]
+add_cards(deck_concepts, concepts, tag="concepts")
+
+# ---------- Virtues & Abstract Words ----------
+deck_virtues = make_deck("Virtues & Abstract Words")
+virtues = [
+    ("truth", "verdad"),
+    ("loyalty", "lealtad"),
+    ("solidarity", "solidaridad"),
+    ("confidence", "confianza"),
+    ("beauty", "belleza"),
+    ("spirit", "espíritu"),
+    ("joy", "alegría"),
+    ("love", "amor"),
+]
+add_cards(deck_virtues, virtues, tag="virtues")
+
+# ---------- Fun Phrases & Misc ----------
+deck_misc = make_deck("Miscellaneous")
+misc = [
+    ("How was it? It was...", "¿Cómo fue? Fue..."),
+    ("It was easy / difficult / so-so / more or less", "fue fácil / difícil / así así / más o menos"),
+    ("the mountain peak", "la punta de la montaña"),
+    ("I need food", "necesito comida"),
+    ("I need a cup of wine", "necesito una copa de vino"),
+    ("Do you have anything?", "¿tienes algo?"),
+    ("You have nothing", "no tienes nada"),
+    ("other languages", "otras lenguas"),
+    ("come se escribe __ en español", "¿cómo se escribe __ en español?"),
+    ("how do you pronounce 'pizarra'?", "¿cómo se pronuncia 'pizarra'?"),
+]
+add_cards(deck_misc, misc, tag="misc")
+
+
 # ---------- Package ----------
 package = genanki.Package([
     root_deck, deck_phrases, deck_verbs, deck_help, deck_numbers,
