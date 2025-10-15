@@ -230,7 +230,6 @@ decks = {
 def main():
     print("🔗 Connecting to AnkiConnect...")
     ensure_model_exists()
-    #TODO remove
     create_decks()
 
     for deck_name, cards in decks.items():
