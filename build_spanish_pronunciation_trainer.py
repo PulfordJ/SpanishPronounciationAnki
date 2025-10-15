@@ -374,11 +374,27 @@ add_cards(deck_math, math_cards, tag="math")
 
 # ---------- Package ----------
 package = genanki.Package([
-    root_deck, deck_phrases, deck_verbs, deck_help, deck_numbers,
-    deck_preguntar, deck_responses, deck_saludar,
-    deck_despedirse, deck_dialogue, deck_original
+    root_deck,
+    deck_phrases,
+    deck_verbs,
+    deck_help,
+    deck_numbers,
+    deck_preguntar,
+    deck_responses,
+    deck_saludar,
+    deck_despedirse,
+    deck_dialogue,
+    deck_original,
+    deck_classroom,
+    deck_grammar,
+    deck_requests,
+    deck_concepts,
+    deck_virtues,
+    deck_misc,
+    deck_verbs_common,
+    deck_math,
 ])
 
 package.write_to_file('collection-20251108135000_updated.colpkg')
-print("✅ Generated: collection-20251008135001_updated.colpkg")
+print("✅ Generated: collection-20251108135000_updated.colpkg")
 print("Import into Anki → overrides old deck → move existing cards into 'Original Cards'.")
