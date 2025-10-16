@@ -578,6 +578,8 @@ def main():
                 add_note(full, en, es, tags=[deck_name.lower().replace(" ", "_")])
                 added += 1
             except Exception as e:
+                # For some reason find_existing_cards hasn't always been reliable preventing this path
+                # so we need to catch duplicate errors and ignore them
                 msg = str(e)
                 if "cannot create note because it is a duplicate" in msg:
                     skipped += 1
