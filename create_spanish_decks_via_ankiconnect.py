@@ -131,7 +131,6 @@ def add_note(deck_name, english, spanish, tags=None):
 from textwrap import dedent
 
 decks = {
-    # Existing content (unchanged)
     "Phrases": [
         ("the morning", "la mañana"),
         ("from where", "de dónde"),
@@ -145,6 +144,7 @@ decks = {
         ("Sorry, I speak a bit of Spanish", "Lo siento, hablo un poco de español"),
         ("What does it mean?", "¿Qué significa?"),
     ],
+
     "Verb Conjugations": [
         ("My name", "Me llamo (yo)"),
         ("Your name", "Te llamas (tú)"),
@@ -154,6 +154,7 @@ decks = {
         ("You all names", "Os llamáis (vosotros)"),
         ("Formal your name", "Se llama (usted)"),
     ],
+
     "Help": [
         ("how", "cómo"),
         ("What did you say?", "¿Cómo dices?"),
@@ -166,6 +167,7 @@ decks = {
         ("to be able to (infinitive form of puedo)", "poder"),
         ("I can", "yo puedo"),
     ],
+
     "Numbers": [
         ("one", "uno"),
         ("two", "dos"),
@@ -208,6 +210,7 @@ decks = {
         ("eighty-eight", "ochenta y ocho"),
         ("ninety-three", "noventa y tres"),
     ],
+
     "Preguntar (Questions)": [
         ("How are (things)?", "¿Qué tal?"),
         ("How are you?", "¿Cómo estás?"),
@@ -220,6 +223,7 @@ decks = {
         ("How are you? (formal)", "¿Cómo se encuentra?"),
         ("How are you? (formal, alt.)", "¿Cómo le va?"),
     ],
+
     "Responses": [
         ("very well", "muy bien"),
         ("well", "bien"),
@@ -233,6 +237,7 @@ decks = {
         ("bad", "mal"),
         ("awful", "fatal"),
     ],
+
     "Saludar (Greetings)": [
         ("hello", "hola"),
         ("hi / hello (neutral)", "buenas"),
@@ -243,6 +248,7 @@ decks = {
         ("nice to see you", "qué gusto verte"),
         ("so happy to see you", "qué alegría verte"),
     ],
+
     "Despedirse (Goodbyes)": [
         ("goodbye", "adiós"),
         ("see you soon", "hasta pronto"),
@@ -256,6 +262,7 @@ decks = {
         ("see you (soon)", "nos vemos (pronto)"),
         ("hope it goes well!", "¡que vaya bien!"),
     ],
+
     "Dialogue": [
         ("Naomi and Pedro", "Naomi y Pedro"),
         ("My name is David. Nice to meet you.", "Me llamo David. Mucho gusto."),
@@ -272,6 +279,7 @@ decks = {
         ("Goodbye, have a good day.", "Adiós, que tengas un buen día."),
         ("Thanks, likewise.", "Gracias, igualmente."),
     ],
+
     "Classroom Objects": [
         ("pen", "bolígrafo"),
         ("pencil", "lápiz"),
@@ -292,7 +300,10 @@ decks = {
         ("calculator", "calculadora"),
         ("eraser", "borrador"),
         ("sharpener", "sacapuntas"),
+        ("camera", "cámara de fotos"),
+        ("also / too", "también"),
     ],
+
     "Grammar (Tener & Plurals)": [
         ("I have three coins", "yo tengo tres monedas"),
         ("I have four things", "yo tengo cuatro cosas"),
@@ -306,7 +317,12 @@ decks = {
         ("plural of silla", "sillas"),
         ("plural of portátil", "portátiles"),
         ("plural of hoja de papel", "hojas de papel"),
+        ("the ball", "el balón"),
+        ("the balls", "los balones"),
+        ("the plant", "la planta"),
+        ("the plants", "las plantas"),
     ],
+
     "Requests & Needs": [
         ("I like to draw with a pencil", "me gusta dibujar con un lápiz"),
         ("Can you lend me a blue pen?", "¿me dejas un boli azul?"),
@@ -322,6 +338,7 @@ decks = {
         ("A pair of glasses", "un par de gafas"),
         ("With a ruler you can make straight lines", "con la regla puedes hacer líneas rectas"),
     ],
+
     "Feelings & Concepts": [
         ("sun", "sol"),
         ("star", "estrella"),
@@ -347,6 +364,7 @@ decks = {
         ("I am sleepy", "yo tengo sueño"),
         ("I have a dream", "yo tengo un sueño"),
     ],
+
     "Virtues & Abstract Words": [
         ("truth", "verdad"),
         ("loyalty", "lealtad"),
@@ -354,6 +372,7 @@ decks = {
         ("spirit", "espíritu"),
         ("love", "amor"),
     ],
+
     "Miscellaneous": [
         ("How was it? It was...", "¿Cómo fue? Fue..."),
         ("It was easy / difficult / so-so / more or less", "fue fácil / difícil / así así / más o menos"),
@@ -366,6 +385,7 @@ decks = {
         ("come se escribe __ en español", "¿cómo se escribe __ en español?"),
         ("how do you pronounce 'pizarra'?", "¿cómo se pronuncia 'pizarra'?"),
     ],
+
     "Common Verbs & Phrases": [
         ("to leave / to let", "dejar"),
         ("I leave / I let", "dejo"),
@@ -373,13 +393,13 @@ decks = {
         ("to take / to drink", "tomar"),
         ("take (here you go)", "toma"),
     ],
+
     "Math & Quantities": [
         ("more", "más"),
         ("less / minus", "menos"),
         ("nine plus one equals ten", "nueve más uno = diez"),
     ],
 
-    # ----------------- NEW DECKS -----------------
     "Nationalities & Countries": [
         ("Canadian", "canadiense"),
         ("He is French", "es francés"),
@@ -415,6 +435,7 @@ decks = {
         ("Indonesian (fem.)", "indonesia"),
         ("Indonesian (masc.)", "indonesio"),
         ("Irish", "irlandés"),
+        ("In pairs, think of four things and write the nationality you associate with each one", "En parejas, pensad cuatro cosas y escribid la nacionalidad con la que relacionáis cada una."),
     ],
 
     "Professions": [
@@ -497,6 +518,8 @@ decks = {
         ("some (feminine)", "unas"),
         ("determined / definite", "determinados"),
         ("undetermined / indefinite", "indeterminados"),
+        ("some pens", "unos bolígrafos"),
+        ("some tables", "unas mesas"),
     ],
 
     "Pronunciation Practice": [
@@ -526,6 +549,10 @@ decks = {
         ("Ulrich works in a language school.", "Ulrich en una escuela de lenguas."),
         ("Gibson works in a laboratory.", "Gibson en un laboratorio."),
         ("Andrés works at a university.", "Andrés en una universidad."),
+        ("name", "nombre"),
+        ("nationality", "nacionalidad"),
+        ("profession", "profesión"),
+        ("age", "edad"),
     ],
 }
 
