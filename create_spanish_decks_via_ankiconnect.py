@@ -10,6 +10,8 @@ Requirements:
 """
 
 import requests
+import time  # <-- add near the top with other imports
+
 
 ANKI_CONNECT_URL = "http://localhost:8765"
 
@@ -559,6 +561,7 @@ decks = {
 
 # ---------- Run ----------
 def main():
+    start_time = time.time()
     print("🔗 Connecting to AnkiConnect...")
     ensure_model_exists()
     create_decks()
@@ -578,8 +581,7 @@ def main():
                 add_note(full, en, es, tags=[deck_name.lower().replace(" ", "_")])
                 added += 1
             except Exception as e:
-                # For some reason find_existing_cards hasn't always been reliable preventing this path
-                # so we need to catch duplicate errors and ignore them
+                # find_existing_cards isn’t always perfect, so catch duplicates gracefully
                 msg = str(e)
                 if "cannot create note because it is a duplicate" in msg:
                     skipped += 1
@@ -590,8 +592,10 @@ def main():
 
         print(f"🃏 Added {added} new cards ({skipped} duplicates skipped, {len(existing)} already in deck).")
 
-    print("\n🎉 Sync complete! Check Anki → Deck Browser → Spanish Pronunciation Trainer.")
-
+    elapsed = time.time() - start_time
+    print(f"\n🎉 Sync complete! Check Anki → Deck Browser → Spanish Pronunciation Trainer.")
+    minutes, seconds = divmod(elapsed, 60)
+    print(f"⏱️ Elapsed time: {int(minutes)}m {seconds:.1f}s")
 
 if __name__ == "__main__":
     main()
