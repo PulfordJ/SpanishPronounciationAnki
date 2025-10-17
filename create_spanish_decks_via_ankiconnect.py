@@ -575,61 +575,85 @@ decks = {
 }
 
 
+# ---------- Filter Notes with Multi ----------
+def filter_addable_notes_all_decks(decks_data):
+    """
+    Run a single multi-call to check all notes across all decks using canAddNotesWithErrorDetail.
+    Returns dict[deck_name] = (addable_notes, skipped_count)
+    """
+    multi_actions = []
+    deck_keys = []
+    for deck_name, cards in decks_data.items():
+        full = f"{ROOT_DECK}::{deck_name}"
+        notes = [
+            {
+                "deckName": full,
+                "modelName": MODEL_NAME,
+                "fields": {"English": en, "Spanish": es, "Tags": deck_name.lower().replace(" ", "_")},
+                "options": {"allowDuplicate": False},
+                "tags": [deck_name.lower().replace(" ", "_")],
+            }
+            for en, es in cards
+        ]
+        multi_actions.append({"action": "canAddNotesWithErrorDetail", "params": {"notes": notes}})
+        deck_keys.append(deck_name)
+
+    results = invoke("multi", actions=multi_actions)
+    output = {}
+    for deck_name, check_result, cards in zip(deck_keys, results, decks_data.values()):
+        addable = []
+        skipped = 0
+        for (en, es), res in zip(cards, check_result):
+            if res is None or not res.get("error"):
+                addable.append(
+                    {
+                        "deckName": f"{ROOT_DECK}::{deck_name}",
+                        "modelName": MODEL_NAME,
+                        "fields": {"English": en, "Spanish": es, "Tags": deck_name.lower().replace(" ", "_")},
+                        "options": {"allowDuplicate": False},
+                        "tags": [deck_name.lower().replace(" ", "_")],
+                    }
+                )
+            else:
+                skipped += 1
+        output[deck_name] = (addable, skipped)
+    return output
+
+
+# ---------- Add Notes in One Multi Call ----------
+def add_notes_all_decks(filtered_results):
+    """Batch-insert all addable notes across decks using one multi call."""
+    multi_actions = []
+    for deck_name, (addable, skipped) in filtered_results.items():
+        if not addable:
+            continue
+        multi_actions.append({"action": "addNotes", "params": {"notes": addable}})
+
+    if not multi_actions:
+        print("✅ No new cards to add — all duplicates skipped.")
+        return
+
+    print(f"⚙️ Adding notes for {len(multi_actions)} decks in one API call...")
+    results = invoke("multi", actions=multi_actions)
+
+    for (deck_name, (addable, skipped)), result in zip(filtered_results.items(), results):
+        added = len(addable)
+        print(f"🃏 {ROOT_DECK}::{deck_name}: Added {added} new cards ({skipped} skipped).")
+
+
 # ---------- Run ----------
-def filter_addable_notes(deck_name, notes):
-    """
-    Use canAddNotesWithErrorDetail to filter out notes that cannot be added (duplicates, invalid, etc.)
-    Returns (addable_notes, skipped_count)
-    """
-    check_payload = [
-        {
-            "deckName": deck_name,
-            "modelName": MODEL_NAME,
-            "fields": {"English": en, "Spanish": es, "Tags": ", ".join(tags) if tags else ""},
-            "options": {"allowDuplicate": False},
-            "tags": tags or [],
-        }
-        for (en, es, tags) in notes
-    ]
-
-    results = invoke("canAddNotesWithErrorDetail", notes=check_payload)
-    addable = []
-    skipped = 0
-
-    for note, res in zip(check_payload, results):
-        # The API returns None or an empty dict if OK; otherwise contains an "error" field
-        if res is None or not res.get("error"):
-            addable.append(note)
-        else:
-            skipped += 1
-    return addable, skipped
-
-
 def main():
     start_time = time.time()
     print("🔗 Connecting to AnkiConnect...")
     ensure_model_exists()
     create_decks()
 
-    for deck_name, cards in decks.items():
-        full = f"{ROOT_DECK}::{deck_name}"
-        print(f"\n📘 Syncing {full} ...")
+    print("\n🔍 Checking which cards can be added...")
+    filtered = filter_addable_notes_all_decks(decks)
+    print("✅ Duplicate filtering complete.")
 
-        # Prepare note tuples for checking
-        note_tuples = [(en, es, [deck_name.lower().replace(" ", "_")]) for en, es in cards]
-
-        # Use canAddNotesWithErrorDetail to pre-filter duplicates
-        addable_notes, skipped = filter_addable_notes(full, note_tuples)
-
-        added = 0
-        if addable_notes:
-            try:
-                invoke("addNotes", notes=addable_notes)
-                added = len(addable_notes)
-            except Exception as e:
-                print(f"⚠️ Error adding batch to {full}: {e}")
-
-        print(f"🃏 Added {added} new cards ({skipped} duplicates skipped).")
+    print("\n🧩 Adding cards in bulk...")
+    add_notes_all_decks(filtered)
 
     elapsed = time.time() - start_time
     minutes, seconds = divmod(elapsed, 60)
