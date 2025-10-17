@@ -560,6 +560,35 @@ decks = {
 
 
 # ---------- Run ----------
+def filter_addable_notes(deck_name, notes):
+    """
+    Use canAddNotesWithErrorDetail to filter out notes that cannot be added (duplicates, invalid, etc.)
+    Returns (addable_notes, skipped_count)
+    """
+    check_payload = [
+        {
+            "deckName": deck_name,
+            "modelName": MODEL_NAME,
+            "fields": {"English": en, "Spanish": es, "Tags": ", ".join(tags) if tags else ""},
+            "options": {"allowDuplicate": False},
+            "tags": tags or [],
+        }
+        for (en, es, tags) in notes
+    ]
+
+    results = invoke("canAddNotesWithErrorDetail", notes=check_payload)
+    addable = []
+    skipped = 0
+
+    for note, res in zip(check_payload, results):
+        # The API returns None or an empty dict if OK; otherwise contains an "error" field
+        if res is None or not res.get("error"):
+            addable.append(note)
+        else:
+            skipped += 1
+    return addable, skipped
+
+
 def main():
     start_time = time.time()
     print("🔗 Connecting to AnkiConnect...")
@@ -569,32 +598,26 @@ def main():
     for deck_name, cards in decks.items():
         full = f"{ROOT_DECK}::{deck_name}"
         print(f"\n📘 Syncing {full} ...")
-        existing = find_existing_cards(full)
+
+        # Prepare note tuples for checking
+        note_tuples = [(en, es, [deck_name.lower().replace(" ", "_")]) for en, es in cards]
+
+        # Use canAddNotesWithErrorDetail to pre-filter duplicates
+        addable_notes, skipped = filter_addable_notes(full, note_tuples)
+
         added = 0
-        skipped = 0
-
-        for en, es in cards:
-            if (en, es) in existing:
-                skipped += 1
-                continue
+        if addable_notes:
             try:
-                add_note(full, en, es, tags=[deck_name.lower().replace(" ", "_")])
-                added += 1
+                invoke("addNotes", notes=addable_notes)
+                added = len(addable_notes)
             except Exception as e:
-                # find_existing_cards isn’t always perfect, so catch duplicates gracefully
-                msg = str(e)
-                if "cannot create note because it is a duplicate" in msg:
-                    skipped += 1
-                    continue
-                else:
-                    print(f"⚠️ Error adding card ({en} → {es}): {msg}")
-                    continue
+                print(f"⚠️ Error adding batch to {full}: {e}")
 
-        print(f"🃏 Added {added} new cards ({skipped} duplicates skipped, {len(existing)} already in deck).")
+        print(f"🃏 Added {added} new cards ({skipped} duplicates skipped).")
 
     elapsed = time.time() - start_time
-    print(f"\n🎉 Sync complete! Check Anki → Deck Browser → Spanish Pronunciation Trainer.")
     minutes, seconds = divmod(elapsed, 60)
+    print(f"\n🎉 Sync complete! Check Anki → Deck Browser → Spanish Pronunciation Trainer.")
     print(f"⏱️ Elapsed time: {int(minutes)}m {seconds:.1f}s")
 
 if __name__ == "__main__":
