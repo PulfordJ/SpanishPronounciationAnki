@@ -95,10 +95,26 @@ SUBDECKS = [
 
 
 def create_decks():
+    """Create all subdecks in a single AnkiConnect multi call."""
+    existing = set(invoke("deckNames"))
+    actions = []
+
     for subdeck in SUBDECKS:
         full_name = f"{ROOT_DECK}::{subdeck}"
-        invoke("createDeck", deck=full_name)
-        print(f"✅ Created deck: {full_name}")
+        if full_name not in existing:
+            actions.append({"action": "createDeck", "params": {"deck": full_name}})
+
+    if not actions:
+        print("✅ All decks already exist; skipped creation.")
+        return
+
+    # Batch them via "multi"
+    print(f"⚙️ Creating {len(actions)} new decks in one API call...")
+    result = invoke("multi", actions=actions)
+    print("✅ Deck creation complete.")
+    for deck, status in zip([a["params"]["deck"] for a in actions], result):
+        print(f"   • {deck} ({'ok' if status is None else status})")
+
 
 
 # ---------- Helpers ----------
