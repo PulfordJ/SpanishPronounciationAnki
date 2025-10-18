@@ -55,6 +55,9 @@ hr { border: none; border-top: 1px solid #ddd; }
                     "<div>{{tts es_ES voices=Google :Spanish}}</div>"
                     "<div style='font-size:26px; margin-top:8px;'><b>{{Spanish}}</b></div>"
                     "<div style='font-size:18px; color:#666; margin-top:6px;'>({{English}})</div>"
+                    "<br>"
+                    "<div style='font-size:16px; color:#888; margin-top:10px;'>Latin American Spanish:</div>"
+                    "<div>{{tts es_US voices=Google:Spanish}}</div>"
                 ),
             }
         ],
