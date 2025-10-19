@@ -174,11 +174,17 @@ def filter_addable_notes_all_decks(decks_data):
 
 # ---------- Add Notes in One Multi Call ----------
 def add_notes_all_decks(filtered_results):
+
+    total_added = 0
+    total_skipped = 0
+
     """Batch-insert all addable notes across decks using one multi call."""
     multi_actions = []
     for deck_name, (addable, skipped) in filtered_results.items():
         if not addable:
+            total_skipped += 1
             continue
+        total_added += len(addable)
         multi_actions.append({"action": "addNotes", "params": {"notes": addable}})
 
     if not multi_actions:
@@ -188,9 +194,9 @@ def add_notes_all_decks(filtered_results):
     print(f"⚙️ Adding notes for {len(multi_actions)} decks in one API call...")
     results = invoke("multi", actions=multi_actions)
 
-    for (deck_name, (addable, skipped)), result in zip(filtered_results.items(), results):
-        added = len(addable)
-        print(f"🃏 {ROOT_DECK}::{deck_name}: Added {added} new cards ({skipped} skipped).")
+
+    print(f"\n✅ Total added across all decks: {total_added} cards ({total_skipped} skipped).")
+
 
 
 # ---------- Run ----------
