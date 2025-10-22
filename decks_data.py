@@ -11,6 +11,7 @@ decks = {
         ("Sorry, I don't speak Japanese", "Lo siento, no hablo japonés"),
         ("Sorry, I speak a bit of Spanish", "Lo siento, hablo un poco de español"),
         ("What does it mean?", "¿Qué significa?"),
+        ("Hey, this afternoon I was thinking that you could go to the beach", "Mira, esta tarde estaba pensando que podrías ir a la playa"),
     ],
 
     "Verb Conjugations": [
