@@ -633,6 +633,8 @@ decks = {
         ("What do you work in? (formal)", "¿en qué trabaja?"),
         ("¿en qué trabajas?", "What do you work in?"),
         ("¿en qué trabajo?", "What do I work in?"),
+        ("Do you have a mobile phone?", "¿tienes móvil?"),
+        ("What is your phone number?", "¿cuál es tu número de teléfono?"),
         ("I know", "conozco"),
         ("Then / so / in that case", "entonces"),
         ("Are you the new colleague?", "¿Tú eres el nuevo compañero?"),
