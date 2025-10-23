@@ -41,380 +41,351 @@ def get_config():
         }
 
 def download_and_execute_script():
-    """Download the Spanish pronunciation script and execute it asynchronously"""
+    """Download and execute script in a completely separate process"""
     logger = get_logger()
     logger.log_function_entry("download_and_execute_script")
     
-    # Run the actual work in a separate thread to avoid blocking Anki's main thread
-    def async_execution():
-        _download_and_execute_script_impl()
-    
-    # Start execution in background thread
-    execution_thread = threading.Thread(target=async_execution, daemon=True)
-    execution_thread.start()
-    
-    logger.info("Script execution started in background thread")
-    showInfo("Spanish pronunciation deck creation started in background.\n\nCheck the debug log for progress updates.\n\nThis will run asynchronously so Anki remains responsive.")
+    try:
+        # Create a standalone runner script
+        runner_script = _create_standalone_runner()
+        
+        # Create subprocess log files
+        subprocess_log_path = _get_subprocess_log_path()
+        subprocess_stdout_path = subprocess_log_path.replace('.log', '_stdout.log')
+        subprocess_stderr_path = subprocess_log_path.replace('.log', '_stderr.log')
+        
+        logger.info(f"Subprocess logs will be written to:")
+        logger.info(f"  Combined log: {_get_process_log_path()}")
+        logger.info(f"  Stdout log: {subprocess_stdout_path}")
+        logger.info(f"  Stderr log: {subprocess_stderr_path}")
+        
+        # Start the process completely detached from Anki with log file redirection
+        import subprocess
+        
+        # Set up environment for Unicode support
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8'
+        env['PYTHONLEGACYWINDOWSSTDIO'] = '0'
+        
+        with open(subprocess_stdout_path, 'w', encoding='utf-8') as stdout_file, \
+             open(subprocess_stderr_path, 'w', encoding='utf-8') as stderr_file:
+            
+            process = subprocess.Popen(
+                [sys.executable, runner_script],
+                creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == 'win32' else 0,
+                start_new_session=True,  # Completely detach from parent
+                stdout=stdout_file,
+                stderr=stderr_file,
+                env=env
+            )
+        
+        logger.info(f"Started independent process PID: {process.pid}")
+        
+        # Get log file paths for user
+        process_log_file = _get_process_log_path()
+        
+        showInfo(f"Spanish pronunciation deck creation started in independent process!\n\n"
+                f"Process PID: {process.pid}\n\n"
+                f"Log files:\n"
+                f"• Main: {process_log_file}\n"
+                f"• Stdout: {subprocess_stdout_path}\n"
+                f"• Stderr: {subprocess_stderr_path}\n\n"
+                f"Anki will remain fully responsive.\n"
+                f"Use 'Open Process Log' from the debug menu to monitor progress.")
+        
+        # Addon exits immediately, process runs independently
+        
+    except Exception as e:
+        logger.error(f"Failed to start independent process: {e}")
+        logger.log_exception("Process creation failed")
+        showCritical(f"Failed to start process: {str(e)}")
 
-def _show_info_thread_safe(message):
-    """Show info dialog in a thread-safe way"""
-    def show_on_main_thread():
-        showInfo(message)
-    
-    # Use QTimer to execute on main thread
-    QTimer.singleShot(0, show_on_main_thread)
+def _get_process_log_path():
+    """Get the path where the independent process will log"""
+    import tempfile
+    return os.path.join(tempfile.gettempdir(), "spanish_pronunciation_process.log")
 
-def _show_error_thread_safe(message):
-    """Show error dialog in a thread-safe way"""
-    def show_on_main_thread():
-        showCritical(message)
-    
-    # Use QTimer to execute on main thread
-    QTimer.singleShot(0, show_on_main_thread)
+def _get_subprocess_log_path():
+    """Get the base path for subprocess stdout/stderr logs"""
+    import tempfile
+    return os.path.join(tempfile.gettempdir(), "spanish_pronunciation_subprocess.log")
 
-def _download_and_execute_script_impl():
-    """Internal implementation that does the actual work"""
-    logger = get_logger()
+def _create_standalone_runner():
+    """Create a standalone Python script that runs independently"""
+    import tempfile
+    
+    # Get configuration
+    config = get_config()
+    script_url = config.get("script_url", SCRIPT_URL)
+    decks_data_url = config.get("decks_data_url", DECKS_DATA_URL)
+    timeout = config.get("timeout_seconds", 300)
+    
+    log_path = _get_process_log_path()
+    
+    # Create the standalone runner script
+    runner_content = f'''#!/usr/bin/env python3
+"""
+Standalone Spanish Pronunciation Deck Creator Runner
+This runs completely independently of Anki
+"""
+
+import os
+import sys
+import time
+import tempfile
+import urllib.request
+import subprocess
+import logging
+import traceback
+from datetime import datetime
+
+# Configuration
+SCRIPT_URL = "{script_url}"
+DECKS_DATA_URL = "{decks_data_url}"
+TIMEOUT = {timeout}
+LOG_PATH = r"{log_path}"
+
+def setup_logging():
+    """Setup logging to file"""
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(LOG_PATH, mode='w', encoding='utf-8'),
+            logging.StreamHandler(sys.stdout)  # Also log to console
+        ]
+    )
+    return logging.getLogger(__name__)
+
+def main():
+    logger = setup_logging()
+    logger.info("=== Spanish Pronunciation Deck Creator - Independent Process ===")
+    logger.info(f"Process PID: {{os.getpid()}}")
+    logger.info(f"Python executable: {{sys.executable}}")
+    logger.info(f"Working directory: {{os.getcwd()}}")
+    logger.info(f"Log file: {{LOG_PATH}}")
     
     start_time = time.time()
-    temp_path = None
+    temp_dir = None
     
     try:
-        # Log system information
-        logger.log_system_info()
+        logger.info("Starting download phase...")
         
-        # Get configuration
-        config = get_config()
-        script_url = config.get("script_url", SCRIPT_URL)
-        decks_data_url = config.get("decks_data_url", DECKS_DATA_URL)
-        timeout = config.get("timeout_seconds", 300)
-        auto_confirm = config.get("auto_confirm", False)
-        
-        logger.info(f"Starting Spanish pronunciation deck creation")
-        logger.info(f"Script URL: {script_url}")
-        logger.info(f"Decks Data URL: {decks_data_url}")
-        logger.info(f"Timeout: {timeout} seconds")
-        logger.info(f"Auto confirm: {auto_confirm}")
-        
-        # Ask user for confirmation unless auto_confirm is enabled
-        if not auto_confirm:
-            logger.debug("Asking user for confirmation")
-            confirmation_msg = ("This will download and run the Spanish Pronunciation Deck Creator script.\n\n"
-                               "Make sure you have AnkiConnect addon installed and Anki is running.\n\n"
-                               "Do you want to continue?")
-            
-            if not askUser(confirmation_msg):
-                logger.info("User cancelled the operation")
-                return
-            
-            logger.info("User confirmed the operation")
-        else:
-            logger.info("Auto-confirmation enabled, skipping user prompt")
-        
-        # Download phase
-        logger.info("Starting file downloads...")
-        
-        download_start = time.time()
-        
-        # Create temporary directory for both files
+        # Create temporary directory
         temp_dir = tempfile.mkdtemp()
-        logger.debug(f"Created temporary directory: {temp_dir}")
+        logger.info(f"Created temporary directory: {{temp_dir}}")
         
         # Download main script
         script_path = os.path.join(temp_dir, "create_spanish_decks_via_ankiconnect.py")
-        logger.debug(f"Downloading main script from: {script_url}")
+        logger.info(f"Downloading main script from: {{SCRIPT_URL}}")
         
-        try:
-            with urllib.request.urlopen(script_url) as response:
-                script_content = response.read().decode('utf-8')
-                with open(script_path, 'w', encoding='utf-8') as f:
-                    f.write(script_content)
-                logger.info(f"Main script downloaded successfully ({len(script_content)} bytes)")
+        with urllib.request.urlopen(SCRIPT_URL) as response:
+            script_content = response.read().decode('utf-8')
+            with open(script_path, 'w', encoding='utf-8') as f:
+                f.write(script_content)
+            logger.info(f"Main script downloaded successfully ({{len(script_content)}} bytes)")
         
-        except urllib.error.URLError as e:
-            logger.error(f"Failed to download main script: {e}")
-            raise
-        except Exception as e:
-            logger.error(f"Unexpected error downloading main script: {e}")
-            raise
-        
-        # Download decks_data.py
+        # Download decks data
         decks_data_path = os.path.join(temp_dir, "decks_data.py")
-        logger.debug(f"Downloading decks data from: {decks_data_url}")
+        logger.info(f"Downloading decks data from: {{DECKS_DATA_URL}}")
         
-        try:
-            with urllib.request.urlopen(decks_data_url) as response:
-                decks_data_content = response.read().decode('utf-8')
-                with open(decks_data_path, 'w', encoding='utf-8') as f:
-                    f.write(decks_data_content)
-                logger.info(f"Decks data downloaded successfully ({len(decks_data_content)} bytes)")
+        with urllib.request.urlopen(DECKS_DATA_URL) as response:
+            decks_data_content = response.read().decode('utf-8')
+            with open(decks_data_path, 'w', encoding='utf-8') as f:
+                f.write(decks_data_content)
+            logger.info(f"Decks data downloaded successfully ({{len(decks_data_content)}} bytes)")
         
-        except urllib.error.URLError as e:
-            logger.error(f"Failed to download decks data: {e}")
-            raise
-        except Exception as e:
-            logger.error(f"Unexpected error downloading decks data: {e}")
-            raise
+        logger.info("Download phase completed successfully")
         
-        download_time = time.time() - download_start
-        logger.info(f"All downloads completed successfully in {download_time:.2f} seconds")
-        
-        temp_path = script_path  # Main script path for execution
-        
-        # Execution phase
+        # Execute the script
         logger.info("Starting script execution...")
         execution_start = time.time()
         
-        # Prepare execution environment
-        execution_env = os.environ.copy()
-        execution_cmd = [sys.executable, temp_path]
+        # Use the same Python executable that's running this script
+        cmd = [sys.executable, script_path]
         
-        # Set working directory to temp_dir so script can find decks_data.py
-        execution_cwd = temp_dir
+        logger.info(f"Executing: {{' '.join(cmd)}}")
+        logger.info(f"Working directory: {{temp_dir}}")
         
-        logger.debug(f"Execution command: {' '.join(execution_cmd)}")
-        logger.debug(f"Working directory: {execution_cwd}")
-        logger.debug(f"Python executable: {sys.executable}")
-        logger.debug(f"Temporary directory contains: {os.listdir(temp_dir)}")
+        # Set up environment for proper Unicode handling
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8'
+        env['PYTHONLEGACYWINDOWSSTDIO'] = '0'  # Use new Windows console behavior
         
-        # Test subprocess execution with a simple command first
-        logger.info("Testing subprocess execution with simple Python command...")
-        try:
-            test_cmd = [sys.executable, "-c", "print('Hello from subprocess'); import sys; print(f'Python version: {sys.version}', file=sys.stderr)"]
-            test_process = subprocess.Popen(
-                test_cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                cwd=execution_cwd,
-                encoding='utf-8',
-                errors='replace'
-            )
-            
-            test_stdout, test_stderr = test_process.communicate(timeout=10)
-            logger.info(f"Test subprocess completed with return code: {test_process.returncode}")
-            logger.debug(f"Test stdout: {test_stdout.strip()}")
-            logger.debug(f"Test stderr: {test_stderr.strip()}")
-            
-            if test_process.returncode != 0:
-                logger.warning("Test subprocess failed, but continuing with main script...")
-            else:
-                logger.info("Test subprocess successful, proceeding with main script")
-                
-        except Exception as e:
-            logger.error(f"Test subprocess failed: {e}")
-            logger.warning("Test failed but continuing with main script anyway...")
+        # Run with real-time output logging
+        process = subprocess.Popen(
+            cmd,
+            cwd=temp_dir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            universal_newlines=True,
+            env=env,
+            encoding='utf-8',
+            errors='replace'  # Replace problematic characters instead of failing
+        )
         
-        try:
-            # Run the script in a subprocess to avoid blocking Anki
-            logger.info(f"Executing script with {timeout} second timeout...")
-            
-            # Set UTF-8 encoding for subprocess to handle Unicode characters
-            execution_env['PYTHONIOENCODING'] = 'utf-8'
-            
-            # Use Popen for real-time logging
-            process = subprocess.Popen(
-                execution_cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                env=execution_env,
-                cwd=execution_cwd,
-                encoding='utf-8',
-                errors='replace',
-                bufsize=1,  # Line buffered
-                universal_newlines=True
-            )
-            
-            logger.info("Subprocess started, monitoring output...")
-            logger.debug(f"Process PID: {process.pid}")
-            
-            # Monitor process output in real-time
-            stdout_lines = []
-            stderr_lines = []
-            
-            
-            def read_stdout():
-                """Read stdout in a separate thread"""
-                try:
-                    for line in iter(process.stdout.readline, ''):
-                        if line:
-                            line = line.rstrip('\n\r')
-                            safe_line = line.encode('ascii', errors='replace').decode('ascii')
-                            logger.info(f"SUBPROCESS STDOUT: {safe_line}")
-                            stdout_lines.append(line)
-                        if process.poll() is not None:
-                            break
-                except Exception as e:
-                    logger.error(f"Error reading stdout: {e}")
-                finally:
-                    if process.stdout:
-                        process.stdout.close()
-            
-            def read_stderr():
-                """Read stderr in a separate thread"""
-                try:
-                    for line in iter(process.stderr.readline, ''):
-                        if line:
-                            line = line.rstrip('\n\r')
-                            safe_line = line.encode('ascii', errors='replace').decode('ascii')
-                            logger.warning(f"SUBPROCESS STDERR: {safe_line}")
-                            stderr_lines.append(line)
-                        if process.poll() is not None:
-                            break
-                except Exception as e:
-                    logger.error(f"Error reading stderr: {e}")
-                finally:
-                    if process.stderr:
-                        process.stderr.close()
-            
-            # Start reader threads
-            stdout_thread = threading.Thread(target=read_stdout)
-            stderr_thread = threading.Thread(target=read_stderr)
-            stdout_thread.daemon = True
-            stderr_thread.daemon = True
-            
-            stdout_thread.start()
-            stderr_thread.start()
-            
-            # Wait for process to complete or timeout with periodic status checks
-            try:
-                # Check process status periodically
-                check_interval = 5  # seconds
-                elapsed = 0
-                
-                while process.poll() is None and elapsed < timeout:
-                    logger.debug(f"Process {process.pid} still running after {elapsed}s...")
-                    logger.debug(f"Stdout thread alive: {stdout_thread.is_alive()}")
-                    logger.debug(f"Stderr thread alive: {stderr_thread.is_alive()}")
-                    
-                    # Wait for a short interval or until process completes
-                    try:
-                        returncode = process.wait(timeout=check_interval)
-                        break  # Process completed
-                    except subprocess.TimeoutExpired:
-                        elapsed += check_interval
-                        continue
-                
-                if process.poll() is None:
-                    # Process is still running after timeout
-                    raise subprocess.TimeoutExpired(execution_cmd, timeout)
-                
-                returncode = process.returncode
-                execution_time = time.time() - execution_start
-                logger.info(f"Script execution completed with return code: {returncode}")
-                logger.debug(f"Execution time: {execution_time:.2f} seconds")
-                
-                # Wait for reader threads to finish
-                stdout_thread.join(timeout=5)
-                stderr_thread.join(timeout=5)
-                
-            except subprocess.TimeoutExpired:
-                execution_time = time.time() - execution_start
-                logger.error(f"Process timed out after {timeout} seconds (actual: {execution_time:.2f}s)")
-                logger.info("Terminating subprocess...")
-                process.terminate()
-                
-                # Wait a bit for graceful termination
-                try:
-                    process.wait(timeout=10)
-                    logger.info("Subprocess terminated gracefully")
-                except subprocess.TimeoutExpired:
-                    logger.warning("Subprocess did not terminate gracefully, killing...")
-                    process.kill()
-                    process.wait()
-                    logger.warning("Subprocess killed")
-                
-                # Wait for reader threads to finish
-                stdout_thread.join(timeout=5)
-                stderr_thread.join(timeout=5)
-                
-                _show_error_thread_safe(f"Script execution timed out after {timeout} seconds.")
-                return
-            
-            # Combine output for further processing
-            result_stdout = '\n'.join(stdout_lines)
-            result_stderr = '\n'.join(stderr_lines)
-            
-            logger.debug(f"Total stdout lines: {len(stdout_lines)}")
-            logger.debug(f"Total stderr lines: {len(stderr_lines)}")
-            
-            # Handle results with safe Unicode handling
-            if returncode == 0:
-                success_msg = f"Spanish pronunciation deck creation completed successfully!\n\n"
-                if result_stdout.strip():
-                    try:
-                        # Clean output for display, replacing problematic Unicode characters
-                        clean_output = result_stdout.encode('ascii', errors='replace').decode('ascii')
-                        success_msg += f"Output:\n{clean_output}"
-                    except Exception as e:
-                        logger.warning(f"Error processing output for display: {e}")
-                        success_msg += f"Output: {len(result_stdout)} characters (contains Unicode characters)"
-                else:
-                    success_msg += "No output from script."
-                
-                logger.info("Script execution successful")
-                _show_info_thread_safe(success_msg)
-                
-            else:
-                error_msg = f"Script execution failed with return code {returncode}!\n\n"
-                
-                if result_stderr.strip():
-                    try:
-                        clean_stderr = result_stderr.encode('ascii', errors='replace').decode('ascii')
-                        error_msg += f"Error:\n{clean_stderr}\n\n"
-                    except Exception as e:
-                        logger.warning(f"Error processing stderr for display: {e}")
-                        error_msg += f"Error: {len(result_stderr)} characters (contains Unicode characters)\n\n"
-                
-                if result_stdout.strip():
-                    try:
-                        clean_stdout = result_stdout.encode('ascii', errors='replace').decode('ascii')
-                        error_msg += f"Output:\n{clean_stdout}"
-                    except Exception as e:
-                        logger.warning(f"Error processing stdout for display: {e}")
-                        error_msg += f"Output: {len(result_stdout)} characters (contains Unicode characters)"
-                
-                logger.error(f"Script execution failed with return code {returncode}")
-                _show_error_thread_safe(error_msg)
+        logger.info(f"Script subprocess started with PID: {{process.pid}}")
         
-        except Exception as e:
-            execution_time = time.time() - execution_start
-            logger.error(f"Script execution failed with exception after {execution_time:.2f}s: {e}")
-            logger.log_exception("Script execution exception")
-            _show_error_thread_safe(f"Error executing script: {str(e)}")
+        # Read output in real-time
+        stdout_lines = []
+        stderr_lines = []
         
-    except urllib.error.URLError as e:
-        logger.error(f"Network error during download: {e}")
-        _show_error_thread_safe(f"Failed to download script: {str(e)}\n\nPlease check your internet connection.")
+        # Monitor process output
+        while True:
+            stdout_line = process.stdout.readline()
+            stderr_line = process.stderr.readline()
+            
+            if stdout_line:
+                logger.info(f"SCRIPT OUTPUT: {{stdout_line.rstrip()}}")
+                stdout_lines.append(stdout_line.rstrip())
+            
+            if stderr_line:
+                logger.warning(f"SCRIPT ERROR: {{stderr_line.rstrip()}}")
+                stderr_lines.append(stderr_line.rstrip())
+            
+            # Check if process is done
+            if process.poll() is not None:
+                # Read any remaining output
+                remaining_stdout, remaining_stderr = process.communicate()
+                if remaining_stdout:
+                    for line in remaining_stdout.splitlines():
+                        logger.info(f"SCRIPT OUTPUT: {{line}}")
+                        stdout_lines.append(line)
+                if remaining_stderr:
+                    for line in remaining_stderr.splitlines():
+                        logger.warning(f"SCRIPT ERROR: {{line}}")
+                        stderr_lines.append(line)
+                break
+            
+            if not stdout_line and not stderr_line:
+                time.sleep(0.1)  # Small delay to prevent busy waiting
+        
+        returncode = process.returncode
+        execution_time = time.time() - execution_start
+        
+        logger.info(f"Script execution completed with return code: {{returncode}}")
+        logger.info(f"Execution time: {{execution_time:.2f}} seconds")
+        
+        if returncode == 0:
+            logger.info("✅ SUCCESS: Spanish pronunciation decks created successfully!")
+            if stdout_lines:
+                logger.info("Final output summary:")
+                for line in stdout_lines[-10:]:  # Last 10 lines
+                    logger.info(f"  {{line}}")
+        else:
+            logger.error(f"❌ FAILED: Script execution failed with return code {{returncode}}")
+            if stderr_lines:
+                logger.error("Error details:")
+                for line in stderr_lines[-10:]:  # Last 10 lines
+                    logger.error(f"  {{line}}")
         
     except Exception as e:
-        logger.error(f"Unexpected error in main function: {e}")
-        logger.log_exception("Unexpected error in download_and_execute_script")
-        _show_error_thread_safe(f"Unexpected error: {str(e)}")
+        logger.error(f"❌ EXCEPTION: {{e}}")
+        logger.error(traceback.format_exc())
         
     finally:
-        # Clean up temporary directory and files
-        if 'temp_dir' in locals():
+        # Cleanup
+        if temp_dir and os.path.exists(temp_dir):
             try:
                 import shutil
-                if os.path.exists(temp_dir):
-                    shutil.rmtree(temp_dir)
-                    logger.debug(f"Cleaned up temporary directory: {temp_dir}")
-                else:
-                    logger.debug(f"Temporary directory already removed: {temp_dir}")
+                shutil.rmtree(temp_dir)
+                logger.info(f"Cleaned up temporary directory: {{temp_dir}}")
             except Exception as e:
-                logger.warning(f"Failed to clean up temporary directory {temp_dir}: {e}")
+                logger.warning(f"Failed to clean up {{temp_dir}}: {{e}}")
         
         total_time = time.time() - start_time
-        logger.info(f"Total operation time: {total_time:.2f} seconds")
-        logger.log_function_exit("download_and_execute_script")
+        logger.info(f"Total process time: {{total_time:.2f}} seconds")
+        logger.info("=== Process completed ===")
+
+if __name__ == "__main__":
+    main()
+'''
+    
+    # Write the runner script to a temporary file
+    runner_fd, runner_path = tempfile.mkstemp(suffix='.py', prefix='spanish_pronunciation_runner_')
+    try:
+        with os.fdopen(runner_fd, 'w', encoding='utf-8') as f:
+            f.write(runner_content)
+        
+        logger = get_logger()
+        logger.info(f"Created standalone runner script: {{runner_path}}")
+        return runner_path
+        
+    except Exception as e:
+        os.close(runner_fd)
+        raise
+
 
 def open_log_file():
     """Open the debug log file"""
     logger = get_logger()
     logger.info("Opening log file...")
     logger.open_log_file()
+
+def open_process_log():
+    """Open the independent process log file"""
+    logger = get_logger()
+    log_path = _get_process_log_path()
+    
+    if os.path.exists(log_path):
+        logger.info(f"Opening process log: {log_path}")
+        try:
+            if sys.platform == 'win32':
+                os.startfile(log_path)
+            elif sys.platform == 'darwin':
+                subprocess.run(['open', log_path])
+            else:
+                subprocess.run(['xdg-open', log_path])
+        except Exception as e:
+            logger.error(f"Failed to open process log: {e}")
+            showCritical(f"Failed to open log file: {log_path}\n\nError: {e}")
+    else:
+        showInfo(f"Process log file not found: {log_path}\n\nThe independent process may not have started yet or may have completed.")
+        logger.warning(f"Process log file not found: {log_path}")
+
+def open_subprocess_stdout_log():
+    """Open the subprocess stdout log file"""
+    logger = get_logger()
+    log_path = _get_subprocess_log_path().replace('.log', '_stdout.log')
+    
+    if os.path.exists(log_path):
+        logger.info(f"Opening subprocess stdout log: {log_path}")
+        try:
+            if sys.platform == 'win32':
+                os.startfile(log_path)
+            elif sys.platform == 'darwin':
+                subprocess.run(['open', log_path])
+            else:
+                subprocess.run(['xdg-open', log_path])
+        except Exception as e:
+            logger.error(f"Failed to open subprocess stdout log: {e}")
+            showCritical(f"Failed to open log file: {log_path}\n\nError: {e}")
+    else:
+        showInfo(f"Subprocess stdout log file not found: {log_path}\n\nThe process may not have started yet.")
+        logger.warning(f"Subprocess stdout log file not found: {log_path}")
+
+def open_subprocess_stderr_log():
+    """Open the subprocess stderr log file"""
+    logger = get_logger()
+    log_path = _get_subprocess_log_path().replace('.log', '_stderr.log')
+    
+    if os.path.exists(log_path):
+        logger.info(f"Opening subprocess stderr log: {log_path}")
+        try:
+            if sys.platform == 'win32':
+                os.startfile(log_path)
+            elif sys.platform == 'darwin':
+                subprocess.run(['open', log_path])
+            else:
+                subprocess.run(['xdg-open', log_path])
+        except Exception as e:
+            logger.error(f"Failed to open subprocess stderr log: {e}")
+            showCritical(f"Failed to open log file: {log_path}\n\nError: {e}")
+    else:
+        showInfo(f"Subprocess stderr log file not found: {log_path}\n\nThe process may not have started yet.")
+        logger.warning(f"Subprocess stderr log file not found: {log_path}")
 
 def show_debug_info():
     """Show debug information dialog"""
@@ -487,9 +458,25 @@ def setup_menu():
         debug_menu = QMenu("Spanish Pronunciation Debug", mw)
         
         # Debug actions
-        log_action = QAction("Open Log File", mw)
+        log_action = QAction("Open Addon Log File", mw)
         log_action.triggered.connect(open_log_file)
         debug_menu.addAction(log_action)
+        
+        debug_menu.addSeparator()
+        
+        process_log_action = QAction("Open Process Log File", mw)
+        process_log_action.triggered.connect(open_process_log)
+        debug_menu.addAction(process_log_action)
+        
+        stdout_log_action = QAction("Open Subprocess Stdout Log", mw)
+        stdout_log_action.triggered.connect(open_subprocess_stdout_log)
+        debug_menu.addAction(stdout_log_action)
+        
+        stderr_log_action = QAction("Open Subprocess Stderr Log", mw)
+        stderr_log_action.triggered.connect(open_subprocess_stderr_log)
+        debug_menu.addAction(stderr_log_action)
+        
+        debug_menu.addSeparator()
         
         info_action = QAction("Show Debug Info", mw)
         info_action.triggered.connect(show_debug_info)
