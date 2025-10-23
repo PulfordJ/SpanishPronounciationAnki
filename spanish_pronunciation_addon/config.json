@@ -1,0 +1,11 @@
+{
+    "script_url": "https://raw.githubusercontent.com/PulfordJ/SpanishPronounciationAnki/master/create_spanish_decks_via_ankiconnect.py",
+    "decks_data_url": "https://raw.githubusercontent.com/PulfordJ/SpanishPronounciationAnki/master/decks_data.py",
+    "timeout_seconds": 300,
+    "auto_confirm": false,
+    "debug_mode": true,
+    "log_level": "DEBUG",
+    "log_to_file": true,
+    "log_to_console": true,
+    "show_system_info": true
+}

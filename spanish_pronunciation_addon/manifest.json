@@ -1,0 +1,23 @@
+{
+    "package": "spanish_pronunciation_deck_creator",
+    "name": "Spanish Pronunciation Deck Creator - Enhanced Debug",
+    "mod": 1761233419,
+    "author": "Spanish Pronunciation Addon",
+    "description": "Downloads and executes the Spanish pronunciation deck creation script from GitHub with comprehensive debugging and logging capabilities",
+    "version": "1.2.1",
+    "ankiweb_id": null,
+    "homepage": "https://github.com/PulfordJ/SpanishPronounciationAnki",
+    "tags": [
+        "spanish",
+        "pronunciation",
+        "tts",
+        "language learning",
+        "debug",
+        "logging"
+    ],
+    "min_point_version": 49,
+    "max_point_version": 99,
+    "branch_index": 0,
+    "update_enabled": true,
+    "disabled": false
+}
