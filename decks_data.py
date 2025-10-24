@@ -240,9 +240,21 @@ decks = {
         ("ninety-three", "noventa y tres"),
     ],
 
+    "Interrogative Words": [
+        ("What", "¿Qué?"),
+        ("Who (singular/plural)", "¿Quién? / ¿Quiénes?"),
+        ("Where", "¿Dónde?"),
+        ("When", "¿Cuándo?"),
+        ("Which", "¿Cuál? / ¿Cuáles?"),
+        ("Why", "¿Por qué?"),
+        ("How", "¿Cómo?"),
+        ("How much / How many", "¿Cuánto? / ¿Cuánta? / ¿Cuántos? / ¿Cuántas?"),
+    ],
+
     "Preguntar (Questions)": [
         ("How are (things)?", "¿Qué tal?"),
         ("How are you?", "¿Cómo estás?"),
+        ("How are you? (casual)", "¿Cómo andas?"),
         ("All good?", "¿Todo bien?"),
         ("How is everything?", "¿Qué tal todo?"),
         ("How's it going (for you)?", "¿Qué tal te va?"),
@@ -251,6 +263,10 @@ decks = {
         ("How is (he/she)?", "¿Cómo está?"),
         ("How are you? (formal)", "¿Cómo se encuentra?"),
         ("How are you? (formal, alt.)", "¿Cómo le va?"),
+        ("Does 'Ordenador' mean 'computer'?", "¿'Ordenador' significa 'computer'?"),
+        ("Where is the protagonist located in each of the vignettes?", "¿Dónde se encuentra el protagonista en cada una de las viñetas?"),
+        ("What relationship do you think there is between Francisco and the other characters?", "¿Qué relación crees que hay entre Francisco y los demás personajes?"),
+        ("Which of these ways of addressing a person seem formal and which seem informal to you?", "¿Cuáles de estas formas de dirigirse a una persona te parecen formales y cuáles te parecen informales?"),
     ],
 
     "Responses": [
@@ -276,6 +292,7 @@ decks = {
         ("I'm glad to see you", "me alegro de verte"),
         ("nice to see you", "qué gusto verte"),
         ("so happy to see you", "qué alegría verte"),
+        ("welcome (plural)", "bienvenidos"),
     ],
 
     "Despedirse (Goodbyes)": [
@@ -418,6 +435,13 @@ decks = {
         ("other languages", "otras lenguas"),
         ("come se escribe __ en español", "¿cómo se escribe __ en español?"),
         ("how do you pronounce 'pizarra'?", "¿cómo se pronuncia 'pizarra'?"),
+        ("the others / the rest", "los demás"),
+        ("you believe / think", "crees"),
+        ("between", "entre"),
+        ("to address / to direct oneself to", "dirigirse"),
+        ("formal (plural)", "formales"),
+        ("ways / forms", "formas"),
+        ("they seem formal", "parecen formales"),
     ],
 
     "Common Verbs & Phrases": [
