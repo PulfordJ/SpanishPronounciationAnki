@@ -1,0 +1,14 @@
+{
+    "package": "spanish_deck_exporter",
+    "name": "Spanish Deck Exporter",
+    "mod": 1234567890,
+    "conflicts": [],
+    "author": "Spanish Deck Automation",
+    "human_version": "1.0.0",
+    "description": "Provides API endpoint to export Spanish pronunciation decks as .apkg files programmatically. Extends AnkiConnect functionality.",
+    "config": {
+        "export_path": "",
+        "allowed_decks": ["Spanish Pronunciation Trainer"],
+        "api_port": 8766
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "export_path": "",
+    "allowed_decks": ["Spanish Pronunciation Trainer"],
+    "enable_api": true,
+    "api_port": 8766
+}
