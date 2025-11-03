@@ -256,7 +256,7 @@ def init_plugin():
     if not ANKICONNECT_AVAILABLE:
         standalone_api = StandaloneAPI(deck_exporter_instance)
         if standalone_api.start_server():
-            showInfo("Spanish Deck Exporter: API server started on port 8766")
+            print("Spanish Deck Exporter: API server started on port 8766")
         else:
             showInfo("Spanish Deck Exporter: Failed to start API server")
 
