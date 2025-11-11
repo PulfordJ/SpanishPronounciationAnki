@@ -572,6 +572,8 @@ decks = {
         ("Portuguese (fem.)", "portuguesa"),
         ("Spanish (masc.)", "español"),
         ("Spanish (fem.)", "española"),
+        ("Brazilian (fem.)", "brasileña"),
+        ("Chilean (fem.)", "chilena"),
     ],
 
     "Workplaces": [
@@ -694,6 +696,9 @@ decks = {
         ("athlete (fem.)", "deportista"),
         ("commercial agent (masc.)", "comercial"),
         ("commercial agent (fem.)", "comercial"),
+        ("urban artist (fem.)", "artista urbana"),
+        ("professional footballer (fem.)", "futbolista profesional"),
+        ("actress", "actriz"),
     ],
 
     "Food & Culture": [
@@ -842,4 +847,14 @@ decks = {
         ("It’s Monday", "Es lunes"),
         ("See you on Monday", "Hasta el lunes"),
         ],
+
+    "Famous People & Examples": [
+        ("Germaine Franco", "Germaine Franco"),
+        ("José Andrés Puerta", "José Andrés Puerta"),
+        ("Ana de Armas", "Ana de Armas"),
+        ("Inti Castro", "Inti Castro"),
+        ("Vero Boquete", "Vero Boquete"),
+        ("Pablo Picasso was a Spanish artist", "Pablo Picasso fue un artista español"),
+        ("Inti Castro is a Chilean urban artist", "Inti Castro es una artista urbana chilena"),
+    ],
 }
