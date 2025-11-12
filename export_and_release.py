@@ -10,6 +10,7 @@ import time
 import subprocess
 from datetime import datetime
 from typing import Dict, Any, Optional
+import create_spanish_decks_via_ankiconnect
 
 # Configuration
 ANKI_EXPORT_URL = "http://localhost:8765"  # AnkiConnect URL
@@ -237,6 +238,11 @@ def main():
     output_path = os.path.join(os.getcwd(), output_filename)
     
     try:
+        # Step 0: Create/update Spanish decks via AnkiConnect
+        print(f"\n🧩 Step 0: Creating/updating Spanish decks via AnkiConnect...")
+        create_spanish_decks_via_ankiconnect.main()
+        print("✅ Spanish decks creation/update completed")
+        
         # Step 1: Export deck
         print(f"\n📦 Step 1: Exporting deck to {output_filename}")
         export_result = export_deck(output_path)
