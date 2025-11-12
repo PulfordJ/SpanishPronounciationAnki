@@ -63,6 +63,17 @@ When new cards are added to the deck:
 - Internet connection for Text-to-Speech functionality (Android TTS works offline)
 - No additional add-ons required
 
+## 🤝 Help Me Add New Flashcards
+
+Want to contribute new Spanish words, phrases, or corrections to the deck? Here's how you can help:
+
+1. **Watch this tutorial**: [How to Contribute Spanish Cards](https://www.youtube.com/watch?v=TwVTOMrkWKU)
+2. **Submit suggestions** of Spanish words or sentences we're missing via GitHub issues or email
+3. **Report errors** in existing cards
+4. **Suggest new categories** or vocabulary themes
+
+Your contributions help make this deck better for everyone learning Spanish!
+
 ## 🆘 Support
 
 If you encounter any issues:
