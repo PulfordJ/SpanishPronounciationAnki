@@ -841,6 +841,7 @@ decks = {
         ("We wait outside the store", "esperamos fuera de la tienda"),
         ("I live near the beach", "vivo cerca de la playa"),
         ("The hospital is far from here", "el hospital está lejos de aquí"),
+        ("To practice prepositions", "Practicar las preposiciones"),
     ],
 
     "Nationalities & Countries": [
@@ -1643,6 +1644,7 @@ decks = {
         ("I want to understand everything", "quiero entender todo"),
         ("You want to live here", "quieres vivir aquí"),
         ("We want the same thing", "queremos lo mismo"),
+        ("To practice the verb querer", "Practicar el verbo querer"),
     ],
 
     "Sample Introductions": [
