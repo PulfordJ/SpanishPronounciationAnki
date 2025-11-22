@@ -578,6 +578,7 @@ decks = {
         ("mellifluous / sweet-sounding", "melíflua"),
         ("I am sleepy", "yo tengo sueño"),
         ("I have a dream", "yo tengo un sueño"),
+        ("beside oneself / out of one's mind", "fuera de sí"),
     ],
 
     "Virtues & Abstract Words": [
