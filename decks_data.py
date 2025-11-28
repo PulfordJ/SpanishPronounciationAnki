@@ -121,6 +121,7 @@ decks = {
         ("to have fun", "divertirte"),
         ("It's important to leave early", "Es importante salir temprano"),
         ("Spanish songs", "canciones de español"),
+        ("the little chicks say", "los pollitos dicen"),
     ],
 
     "Verb Conjugations": [
@@ -462,6 +463,11 @@ decks = {
         ("Can you repeat, please?", "¿Puedes repetir, por favor?"),
         ("to be able to (infinitive form of puedo)", "poder"),
         ("I can", "yo puedo"),
+    ],
+
+    "Classroom Instructions": [
+        ("observe the images and indicate what those people do to learn Spanish", "observa las imágenes e indica qué hacen esas personas para aprender español"),
+        ("think about cities or countries you want to visit and write your reasons", "piensa en ciudades o países que quieres visitar y escribe tus razones"),
     ],
 
     "Numbers": [
