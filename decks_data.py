@@ -1740,6 +1740,9 @@ decks = {
     "SER + Adjective": [
         ("Peru is very beautiful", "Perú es muy bonito"),
         ("Peruvians are very kind", "Los peruanos son muy amables"),
+    ],
+
+    "Descriptive Adjectives": [
         ("dangerous (masc.)", "peligroso"),
         ("dangerous (fem.)", "peligrosa"),
     ],
