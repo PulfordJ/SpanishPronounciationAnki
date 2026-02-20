@@ -264,6 +264,17 @@ decks = {
         ("When it's cold she walks through the mountain", "Cuando hace frío ella pasea por la montaña"),
         ("When there's a storm Pablo and Carla play cards", "Cuando hay tormenta Pablo y Carla juegan a las cartas"),
         ("When there's a storm you all watch a movie", "Cuando hay tormenta vosotros veis una película"),
+        ("My house is in Madrid", "Mi casa está en Madrid"),
+        ("Everest is the highest mountain in the world", "El Everest es la montaña más alta del mundo"),
+        ("It's sunny and hot", "Hace sol y calor"),
+        ("In England there are many forests", "En Inglaterra hay muchos bosques"),
+        ("In my city it rains a lot", "En mi ciudad llueve mucho"),
+        ("Where are the Iguazu waterfalls?", "¿Dónde están las cataratas de Iguazú?"),
+        ("There are many white sand beaches in Cuba", "Hay muchas playas de arena blanca en Cuba"),
+        ("In Egypt there are many pyramids", "En Egipto hay muchas pirámides"),
+        ("Venezuela has many different climates", "Venezuela tiene muchos climas diferentes"),
+        ("It's not sunny, it's cloudy and very windy", "No hace sol, está nublado y hace mucho viento"),
+        ("different intensity", "diferente intensidad"),
     ],
 
     "Verb Conjugations": [
@@ -814,6 +825,9 @@ decks = {
         ("How much does the shirt cost?", "¿Cuánto cuesta la camiseta?"),
         ("How many backpacks do you sell?", "¿Cuántas mochilas vendes?"),
         ("What did you do on the weekend?", "¿Qué hiciste el fin de semana?"),
+        ("What is the capital of Peru?", "¿Cuál es la capital de Perú?"),
+        ("What tourist sites of Seville do you want to visit?", "¿Qué sitios turísticos de Sevilla quieres visitar?"),
+        ("Which tourist sites of Seville do you want to visit?", "¿Cuáles sitios turísticos de Sevilla quieres visitar?"),
     ],
 
     "Responses": [
