@@ -90,11 +90,16 @@ def get_deck_stats() -> Dict[str, Any]:
             try:
                 cards = invoke_ankiconnect("findCards", query=f'deck:"{deck}"')
                 card_count = len(cards)
-                total_cards += card_count
                 
                 # Get subdeck name
                 subdeck = deck.replace(DECK_NAME + "::", "") if "::" in deck else "Main"
                 deck_info[subdeck] = card_count
+
+                if subdeck == "Main":
+                    # "Main" subdeck actually contains every card, so just use that for total.
+                    # Before this change total cards were always double reality as they added
+                    # Main + all subdecks up together.
+                    total_cards += card_count
                 
             except Exception as e:
                 print(f"⚠️ Could not get stats for deck {deck}: {e}")
