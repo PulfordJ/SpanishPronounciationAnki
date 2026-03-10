@@ -127,6 +127,27 @@ from textwrap import dedent
 
 
 
+# ---------- Early Error Detection ----------
+def check_for_internal_duplicates(decks_data):
+    """Check for duplicate cards within each section that would cause silent failures."""
+    problems = []
+    
+    for deck_name, cards in decks_data.items():
+        seen_cards = {}
+        section_duplicates = []
+        
+        for i, (english, spanish) in enumerate(cards):
+            key = (english, spanish)
+            if key in seen_cards:
+                section_duplicates.append((key, seen_cards[key], i))
+            else:
+                seen_cards[key] = i
+        
+        if section_duplicates:
+            problems.append((deck_name, section_duplicates))
+    
+    return problems
+
 # ---------- Filter Notes with Multi ----------
 def filter_addable_notes_all_decks(decks_data):
     """
@@ -203,6 +224,23 @@ def add_notes_all_decks(filtered_results):
 def main():
     start_time = time.time()
     print("🔗 Connecting to AnkiConnect...")
+    
+    # Check for internal duplicates first (early error detection)
+    print("🔍 Checking for internal duplicates that could cause silent failures...")
+    duplicate_problems = check_for_internal_duplicates(decks)
+    
+    if duplicate_problems:
+        print("❌ ERROR: Found internal duplicates that will prevent deck import:")
+        for deck_name, duplicates in duplicate_problems:
+            print(f"  • {deck_name}: {len(duplicates)} duplicate(s)")
+            for (en, es), first_idx, second_idx in duplicates:
+                print(f"    [{first_idx}] and [{second_idx}]: \"{en}\" → \"{es}\"")
+        print("\n💡 Fix these duplicates in decks_data.py before running export.")
+        print("🚫 ABORTING: Cannot proceed with duplicates present.")
+        exit(1)
+    
+    print("✅ No internal duplicates found.")
+    
     ensure_model_exists()
     create_decks()
 
