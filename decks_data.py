@@ -2526,7 +2526,6 @@ decks = {
         ("It's an electric appliance you use to dry your hair", "Es un aparato eléctrico que usas para secarte el pelo"),
         ("the hair dryer", "el secador"),
         ("They are liquid products you use in the shower", "son unos productos líquidos que usas en la ducha"),
-        ("shampoo and shower gel", "el champú y el gel de baño"),
     ],
 
     "Cost Comparisons & Examples": [
