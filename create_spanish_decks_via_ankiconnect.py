@@ -137,7 +137,7 @@ def check_for_internal_duplicates(decks_data):
         section_duplicates = []
         
         for i, (english, spanish) in enumerate(cards):
-            key = (english, spanish)
+            key = english
             if key in seen_cards:
                 section_duplicates.append((key, seen_cards[key], i))
             else:
@@ -233,8 +233,8 @@ def main():
         print("❌ ERROR: Found internal duplicates that will prevent deck import:")
         for deck_name, duplicates in duplicate_problems:
             print(f"  • {deck_name}: {len(duplicates)} duplicate(s)")
-            for (en, es), first_idx, second_idx in duplicates:
-                print(f"    [{first_idx}] and [{second_idx}]: \"{en}\" → \"{es}\"")
+            for en in duplicates:
+                print(f"    {en}")
         print("\n💡 Fix these duplicates in decks_data.py before running export.")
         print("🚫 ABORTING: Cannot proceed with duplicates present.")
         exit(1)
