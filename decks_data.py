@@ -1545,7 +1545,7 @@ decks = {
         ("a travel agency", "una agencia de viajes"),
         ("a store", "una tienda"),
         ("a supermarket", "un supermercado"),
-        ("a language school", "una escuela de lenguas"),
+        ("a language school", "una escuela de idiomas"),
         ("a yoga school", "una escuela de yoga"),
     ],
 
