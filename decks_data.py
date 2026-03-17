@@ -1216,6 +1216,7 @@ decks = {
         ("seguro", "sure/safe"),
         ("ahí", "there (nearby)"),
         ("allí", "over there (further away)"),
+        ("cliente", "client/customer"),
     ],
 
     "Common Verbs & Phrases": [
@@ -1645,6 +1646,7 @@ decks = {
         ("urban artist (fem.)", "artista urbana"),
         ("professional footballer (fem.)", "futbolista profesional"),
         ("actress", "actriz"),
+        ("pharmaceutical / pharmacist (fem.)", "farmacéutica"),
     ],
 
     "Countries": [
@@ -2428,6 +2430,7 @@ decks = {
         ("The shirt is red and black with squares", "La camisa es de color roja y negra con de cuadros"),
         ("The dress is pink and polka-dotted", "El vestido es de color rosa y de lunares"),
         ("The t-shirt is orange has no pockets and short-sleeved", "La camiseta es de color naranja no tiene bolsillos y de manga corta"),
+        ("esta camiseta de aqua", "this aqua t-shirt"),
         ("The skirt is short", "La falda es corta"),
         ("The boots are brown and long", "Las botas son de color marrón y son largas"),
         ("My underwear is black", "Mi ropa interior es negra"),
@@ -2630,6 +2633,10 @@ decks = {
         ("¿Cuáles compramos?", "Which ones should we buy?"),
         ("Estas botas, ¿cuánto cuestan?", "These boots, how much do they cost?"),
         ("40 euros", "40 euros"),
+        ("¿Qué quiere comprar?", "What do you want to buy?"),
+        ("como lo dice", "how does he/she say it"),
+        ("¿Pregunta precios?", "Does he/she ask for prices?"),
+        ("Al final compra la camiseta que cuesta 20 euros", "In the end he/she buys the t-shirt that costs 20 euros"),
     ],
 
     "Animals & Nature": [
