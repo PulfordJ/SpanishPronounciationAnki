@@ -310,9 +310,6 @@ decks = {
         ("In Canada there are forests", "En Canadá hay bosques"),
         # Questions
         ("What are tacos?", "¿qué son los tacos?"),
-        ("What is mate?", "¿qué es el mate?"),
-        ("What city is the capital of Peru?", "¿qué ciudad es la capital de Perú?"),
-        ("Which is the capital of Peru?", "¿cuál es la capital de Perú?"),
         # Weather and present participles
         ("raining", "lloviendo"),
         ("washing", "lavando"),
