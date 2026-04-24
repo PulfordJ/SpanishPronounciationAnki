@@ -696,6 +696,40 @@ decks = {
         ("ellos/ellas/ustedes cuestan", "they/you all cost"),
     ],
 
+    "Preterite Verb Conjugations": [
+        # Visitar (to visit) preterite conjugations
+        ("visitar (infinitive)", "to visit"),
+        ("yo visité", "I visited"),
+        ("tú visitaste", "you visited"),
+        ("él/ella/usted visitó", "he/she/you (formal) visited"),
+        ("nosotros/as visitamos", "we visited"),
+        ("vosotros/as visitasteis", "you all visited"),
+        ("ellos/ellas/ustedes visitaron", "they/you all visited"),
+        # Estar (to be) preterite conjugations - already exists but adding full set
+        ("yo estuve", "I was"),
+        ("tú estuviste", "you were"),
+        ("él/ella/usted estuvo", "he/she/you (formal) was"),
+        ("nosotros/as estuvimos", "we were"),
+        ("vosotros/as estuvisteis", "you all were"),
+        ("ellos/ellas/ustedes estuvieron", "they/you all were"),
+        # Trabajar (to work) preterite conjugations
+        ("trabajar (infinitive)", "to work"),
+        ("yo trabajé", "I worked"),
+        ("tú trabajaste", "you worked"),
+        ("él/ella/usted trabajó", "he/she/you (formal) worked"),
+        ("nosotros/as trabajamos", "we worked"),
+        ("vosotros/as trabajasteis", "you all worked"),
+        ("ellos/ellas/ustedes trabajaron", "they/you all worked"),
+        # Ordenar (to order) preterite conjugations
+        ("ordenar (infinitive)", "to order"),
+        ("yo ordené", "I ordered"),
+        ("tú ordenaste", "you ordered"),
+        ("él/ella/usted ordenó", "he/she/you (formal) ordered"),
+        ("nosotros/as ordenamos", "we ordered"),
+        ("vosotros/as ordenasteis", "you all ordered"),
+        ("ellos/ellas/ustedes ordenaron", "they/you all ordered"),
+    ],
+
     "Help": [
         ("how", "cómo"),
         ("What did you say?", "¿Cómo dices?"),
