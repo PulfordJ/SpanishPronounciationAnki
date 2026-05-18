@@ -2475,6 +2475,17 @@ decks = {
         ("sure / confident (fem. sing.)", "segura"),
         ("sure / confident (masc. pl.)", "seguros"),
         ("sure / confident (fem. pl.)", "seguras"),
+
+        # Example sentences per personality type
+        ("He/She doesn't smoke or drink, and takes great care of his/her diet", "No fuma ni bebe alcohol, y cuida mucho su alimentación"),
+        ("He/She really likes spending time with his/her family and attending family gatherings", "Le gusta mucho pasar tiempo con su familia y asistir a reuniones familiares"),
+        ("He/She is a slightly strange person — does things that aren't common or usual", "Es una persona un poco extraña — hace cosas que no son comunes o habituales"),
+        ("He/She reads many philosophy books and is interested in literature and art", "Lee muchos libros de filosofía y le interesan la literatura y el arte"),
+        ("He/She loves parties and goes out for drinks with friends every weekend", "Le encantan las fiestas y sale de copas con sus amigos todos los fines de semana"),
+        ("He/She does a lot of exercise: goes to the gym every day and plays tennis on Sundays", "Hace mucho ejercicio: va al gimnasio todos los días y juega al tenis los domingos"),
+        ("He/She doesn't like going out at all. Prefers to stay at home", "No le gusta nada salir. Prefiere quedarse en casa"),
+        ("He/She is a very structured and methodical person. Writes all their plans in a diary", "Es una persona muy estructurada y metódica. Escribe todos sus planes en una agenda"),
+        ("He/She doesn't like working. Prefers to be on the sofa watching TV all day", "No le gusta trabajar. Prefiere estar en el sofá y ver la tele todo el día"),
     ],
 
     "SER + Noun": [
