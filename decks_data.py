@@ -2840,4 +2840,71 @@ decks = {
         ("your favorite piece of clothing", "tu prenda de ropa favorita"),
         ("a weekly grocery shopping", "una compra en el supermercado para toda la semana"),
     ],
+
+    "Physical Descriptions": [
+        # Key question
+        ("What is he/she like?", "¿Cómo es?"),
+
+        # Example sentences (él / yo / tú)
+        ("Carl has a beard and moustache", "Carl lleva barba y bigote"),
+        ("I am slim and young and have brown hair. I have short hair and grey eyes", "Soy delgado y soy joven y soy castaño. Tengo el pelo corto y tengo los ojos grises"),
+        ("You are dark-haired and middle-aged. You have curly hair and green eyes", "Eres morena y eres de mediana edad. Tienes el pelo rizado y los ojos verdes"),
+
+        # Hair colour / complexion
+        ("dark-haired / dark-skinned (masc.)", "moreno"),
+        ("dark-haired / dark-skinned (fem.)", "morena"),
+        ("bald (masc.)", "calvo"),
+        ("bald (fem.)", "calva"),
+        ("blonde (masc.)", "rubio"),
+        ("blonde (fem.)", "rubia"),
+        ("brown-haired (masc.)", "castaño"),
+        ("brown-haired (fem.)", "castaña"),
+        ("red-haired (masc.)", "pelirrojo"),
+        ("red-haired (fem.)", "pelirroja"),
+
+        # Age
+        ("young", "joven"),
+        ("middle-aged", "de mediana edad"),
+        ("elderly / older", "mayor"),
+        ("old (masc.)", "viejo"),
+        ("old (fem.)", "vieja"),
+
+        # Build & looks
+        ("slim / thin (masc.)", "delgado"),
+        ("slim / thin (fem.)", "delgada"),
+        ("fat / overweight (masc.)", "gordo"),
+        ("fat / overweight (fem.)", "gorda"),
+        ("short (masc.)", "bajo"),
+        ("short (fem.)", "baja"),
+        ("tall (masc.)", "alto"),
+        ("tall (fem.)", "alta"),
+        ("handsome / good-looking (masc.)", "guapo"),
+        ("beautiful / good-looking (fem.)", "guapa"),
+        ("ugly (masc.)", "feo"),
+        ("ugly (fem.)", "fea"),
+        ("attractive (masc.)", "atractivo"),
+        ("attractive (fem.)", "atractiva"),
+        ("average-looking", "normal"),
+
+        # Facial features
+        ("beard", "la barba"),
+        ("moustache", "el bigote"),
+        ("freckles", "las pecas"),
+        ("grey hair", "las canas"),
+        ("dark hair", "el pelo moreno"),
+        ("blonde hair", "el pelo rubio"),
+
+        # Hair length & style (individual)
+        ("short hair", "el pelo corto"),
+        ("straight hair", "el pelo liso"),
+        ("long hair", "el pelo largo"),
+        ("curly hair", "el pelo rizado"),
+        ("wavy hair", "el pelo ondulado"),
+
+        # Eye colour (individual)
+        ("blue eyes", "los ojos azules"),
+        ("green eyes", "los ojos verdes"),
+        ("brown eyes", "los ojos marrones"),
+        ("grey eyes", "los ojos grises"),
+    ],
 }
