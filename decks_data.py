@@ -2152,6 +2152,17 @@ decks = {
         ("What day is it today?", "¿Qué día es hoy?"),
         ("It’s Monday", "Es lunes"),
         ("See you on Monday", "Hasta el lunes"),
+
+        # Weekly routine example sentences
+        ("María, on Saturdays, when she rides her bike with her son", "María, los sábados, cuando monta en bici con su hijo"),
+        ("Julia, on Mondays, when she has her morning coffee", "Julia, los lunes, cuando toma el café por la mañana"),
+        ("Iván, on Fridays, when he goes out to eat with his friends", "Iván, los viernes, cuando sale con sus amigos a comer"),
+        ("On Wednesdays, when he/she reads to their grandchild", "Los miércoles, cuando lee a su nieto"),
+        ("On Sundays, when he/she reads at night", "El domingo, cuando lee por la noche"),
+        ("On Thursdays, José dances at the dance school", "Los jueves, José baila en la escuela de baile"),
+        ("On Tuesdays, when he/she plays guitar with their child", "El martes, cuando toca la guitarra con su hijo"),
+        ("On Saturday, when she runs with her friends in the park in the morning", "El sábado, cuando corre con sus amigas en el parque por la mañana"),
+        ("My favourite moments of the week are Mondays, Wednesdays and Fridays, when I go to the gym in the morning", "Mis momentos preferidos de la semana son los lunes, los miércoles y los viernes, cuando salgo al gimnasio por la mañana"),
         ],
 
     "Famous People & Examples": [
@@ -2248,6 +2259,12 @@ decks = {
         ("I want to visit Colombia because I want to dance salsa", "Quiero visitar Colombia porque quiero bailar salsa"),
         ("I want to visit Germany because I want to speak German", "Quiero visitar Alemania porque quiero hablar alemán"),
         ("I want to visit Colombia because I want to eat tostones", "Quiero visitar Colombia porque quiero comer tostones"),
+
+        # Free time
+        ("free time", "el tiempo libre"),
+        ("What activities do you do in your free time?", "¿Qué actividades haces en tu tiempo libre?"),
+        ("to have a beer", "tomar una cerveza"),
+        ("to go for a walk in the park", "pasear por el parque"),
     ],
 
     "Reasons & Purposes (Por vs Para)": [
@@ -2359,6 +2376,105 @@ decks = {
     "Descriptive Adjectives": [
         ("dangerous (masc.)", "peligroso"),
         ("dangerous (fem.)", "peligrosa"),
+    ],
+
+    "Personality Adjectives": [
+        ("adventurous (masc. sing.)", "aventurero"),
+        ("adventurous (fem. sing.)", "aventurera"),
+        ("adventurous (masc. pl.)", "aventureros"),
+        ("adventurous (fem. pl.)", "aventureras"),
+
+        ("fun / funny (masc. sing.)", "divertido"),
+        ("fun / funny (fem. sing.)", "divertida"),
+        ("fun / funny (masc. pl.)", "divertidos"),
+        ("fun / funny (fem. pl.)", "divertidas"),
+
+        ("talkative (masc. sing.)", "hablador"),
+        ("talkative (fem. sing.)", "habladora"),
+        ("talkative (masc. pl.)", "habladores"),
+        ("talkative (fem. pl.)", "habladoras"),
+
+        ("nice / friendly (masc. sing.)", "simpático"),
+        ("nice / friendly (fem. sing.)", "simpática"),
+        ("nice / friendly (masc. pl.)", "simpáticos"),
+        ("nice / friendly (fem. pl.)", "simpáticas"),
+
+        ("quiet / reserved (masc. sing.)", "callado"),
+        ("quiet / reserved (fem. sing.)", "callada"),
+        ("quiet / reserved (masc. pl.)", "callados"),
+        ("quiet / reserved (fem. pl.)", "calladas"),
+
+        ("introverted (masc. sing.)", "introvertido"),
+        ("introverted (fem. sing.)", "introvertida"),
+        ("introverted (masc. pl.)", "introvertidos"),
+        ("introverted (fem. pl.)", "introvertidas"),
+
+        ("extroverted (masc. sing.)", "extrovertido"),
+        ("extroverted (fem. sing.)", "extrovertida"),
+        ("extroverted (masc. pl.)", "extrovertidos"),
+        ("extroverted (fem. pl.)", "extrovertidas"),
+
+        ("shy (masc. sing.)", "tímido"),
+        ("shy (fem. sing.)", "tímida"),
+        ("shy (masc. pl.)", "tímidos"),
+        ("shy (fem. pl.)", "tímidas"),
+
+        ("open / outgoing (masc. sing.)", "abierto"),
+        ("open / outgoing (fem. sing.)", "abierta"),
+        ("open / outgoing (masc. pl.)", "abiertos"),
+        ("open / outgoing (fem. pl.)", "abiertas"),
+
+        ("sociable (sing.)", "sociable"),
+        ("sociable (pl.)", "sociables"),
+
+        ("active (masc. sing.)", "activo"),
+        ("active (fem. sing.)", "activa"),
+        ("active (masc. pl.)", "activos"),
+        ("active (fem. pl.)", "activas"),
+
+        ("healthy (masc. sing.)", "sano"),
+        ("healthy (fem. sing.)", "sana"),
+        ("healthy (masc. pl.)", "sanos"),
+        ("healthy (fem. pl.)", "sanas"),
+
+        ("party-loving (masc. sing.)", "fiestero"),
+        ("party-loving (fem. sing.)", "fiestera"),
+        ("party-loving (masc. pl.)", "fiesteros"),
+        ("party-loving (fem. pl.)", "fiesteras"),
+
+        ("intellectual (sing.)", "intelectual"),
+        ("intellectual (pl.)", "intelectuales"),
+
+        ("homebody (masc. sing.)", "casero"),
+        ("homebody (fem. sing.)", "casera"),
+        ("homebody (masc. pl.)", "caseros"),
+        ("homebody (fem. pl.)", "caseras"),
+
+        ("lazy (masc. sing.)", "perezoso"),
+        ("lazy (fem. sing.)", "perezosa"),
+        ("lazy (masc. pl.)", "perezosos"),
+        ("lazy (fem. pl.)", "perezosas"),
+
+        ("organised (masc. sing.)", "organizado"),
+        ("organised (fem. sing.)", "organizada"),
+        ("organised (masc. pl.)", "organizados"),
+        ("organised (fem. pl.)", "organizadas"),
+
+        ("weird / strange (masc. sing.)", "raro"),
+        ("weird / strange (fem. sing.)", "rara"),
+        ("weird / strange (masc. pl.)", "raros"),
+        ("weird / strange (fem. pl.)", "raras"),
+
+        ("sporty (sing.)", "deportista"),
+        ("sporty (pl.)", "deportistas"),
+
+        ("family-oriented (sing.)", "familiar"),
+        ("family-oriented (pl.)", "familiares"),
+
+        ("sure / confident (masc. sing.)", "seguro"),
+        ("sure / confident (fem. sing.)", "segura"),
+        ("sure / confident (masc. pl.)", "seguros"),
+        ("sure / confident (fem. pl.)", "seguras"),
     ],
 
     "SER + Noun": [
@@ -2831,6 +2947,175 @@ decks = {
         ("It's an electric appliance you use to dry your hair", "Es un aparato eléctrico que usas para secarte el pelo"),
         ("the hair dryer", "el secador"),
         ("They are liquid products you use in the shower", "son unos productos líquidos que usas en la ducha"),
+    ],
+
+    "Gustar & Encantar": [
+        # Infinitives
+        ("gustar", "to like / to be pleasing to"),
+        ("encantar", "to love / to really like"),
+
+        # gustar — conjugation forms
+        ("(a mí) me gusta", "I like it"),
+        ("(a ti) te gusta", "you like it"),
+        ("(a él / ella / usted) le gusta", "he/she likes it / you like it (formal)"),
+        ("(a nosotros) nos gusta", "we like it"),
+        ("(a vosotros) os gusta", "you all like it"),
+        ("(a ellos / ellas / ustedes) les gusta", "they like it / you all like it"),
+
+        # gustar — example sentences with el cine
+        ("A mí me gusta el cine", "I like cinema"),
+        ("A ti te gusta el cine", "You like cinema"),
+        ("A él / ella le gusta el cine", "He/She likes cinema"),
+        ("A nosotros nos gusta el cine", "We like cinema"),
+        ("A vosotros os gusta el cine", "You all like cinema"),
+        ("A ellos / ellas / ustedes les gusta el cine", "They / you all like cinema"),
+
+        # encantar — conjugation forms
+        ("(a mí) me encanta", "I love it"),
+        ("(a ti) te encanta", "you love it"),
+        ("(a él / ella / usted) le encanta", "he/she loves it / you love it (formal)"),
+        ("(a nosotros) nos encanta", "we love it"),
+        ("(a vosotros) os encanta", "you all love it"),
+        ("(a ellos / ellas / ustedes) les encanta", "they love it / you all love it"),
+
+        # encantar — example sentences with el cine
+        ("A mí me encanta el cine", "I love cinema"),
+        ("A ti te encanta el cine", "You love cinema"),
+        ("A él / ella le encanta el cine", "He/She loves cinema"),
+        ("A nosotros nos encanta el cine", "We love cinema"),
+        ("A vosotros os encanta el cine", "You all love cinema"),
+        ("A ellos / ellas / ustedes les encanta el cine", "They / you all love cinema"),
+
+        # gustar — plural conjugation forms
+        ("(a mí) me gustan", "I like them"),
+        ("(a ti) te gustan", "you like them"),
+        ("(a él / ella / usted) le gustan", "he/she likes them / you like them (formal)"),
+        ("(a nosotros) nos gustan", "we like them"),
+        ("(a vosotros) os gustan", "you all like them"),
+        ("(a ellos / ellas / ustedes) les gustan", "they like them / you all like them"),
+
+        # gustar — plural example sentences with las películas
+        ("A mí me gustan las películas", "I like films"),
+        ("A ti te gustan las películas", "You like films"),
+        ("A él / ella le gustan las películas", "He/She likes films"),
+        ("A nosotros nos gustan las películas", "We like films"),
+        ("A vosotros os gustan las películas", "You all like films"),
+        ("A ellos / ellas / ustedes les gustan las películas", "They / you all like films"),
+
+        # encantar — plural conjugation forms
+        ("(a mí) me encantan", "I love them"),
+        ("(a ti) te encantan", "you love them"),
+        ("(a él / ella / usted) le encantan", "he/she loves them / you love them (formal)"),
+        ("(a nosotros) nos encantan", "we love them"),
+        ("(a vosotros) os encantan", "you all love them"),
+        ("(a ellos / ellas / ustedes) les encantan", "they love them / you all love them"),
+
+        # encantar — plural example sentences with las películas
+        ("A mí me encantan las películas", "I love films"),
+        ("A ti te encantan las películas", "You love films"),
+        ("A él / ella le encantan las películas", "He/She loves films"),
+        ("A nosotros nos encantan las películas", "We love films"),
+        ("A vosotros os encantan las películas", "You all love films"),
+        ("A ellos / ellas / ustedes les encantan las películas", "They / you all love films"),
+
+        # Agreement / reaction phrases
+        ("I like to go for a walk in the park", "A mí me gusta pasear por el parque"),
+        ("Me too", "A mí también"),
+        ("Me neither", "A mí tampoco"),
+        ("Not me (I don't)", "A mí no"),
+        ("Yes, me too (emphatic yes)", "A mí sí"),
+
+        # More gustar/encantar examples
+        ("I really like tennis", "A mí me gusta mucho el tenis"),
+        ("I don't like cars", "A mí no me gustan los coches"),
+        ("My sister likes playing on her computer", "A mi hermana le gusta jugar con su ordenador"),
+        ("Jasmine doesn't like coming to class by bus at all", "A Jasmine no le gusta nada venir a clase en autobús"),
+    ],
+
+    "Telling the Time": [
+        # Questions
+        ("What time is it?", "¿Qué hora es?"),
+        ("What time do you have?", "¿Qué hora tienes?"),
+        ("Do you have the time?", "¿Tienes hora?"),
+        ("At what time...?", "¿A qué hora...?"),
+        ("Hey, what time is the party?", "¿Oye, a qué hora es la fiesta?"),
+        ("It's at half past nine at night", "Es a las nueve y media de la noche"),
+
+        # Hours
+        ("It's one o'clock", "Es la una"),
+        ("It's two o'clock", "Son las dos"),
+        ("It's three o'clock", "Son las tres"),
+        ("It's four o'clock", "Son las cuatro"),
+        ("It's five o'clock", "Son las cinco"),
+        ("It's six o'clock", "Son las seis"),
+        ("It's seven o'clock", "Son las siete"),
+        ("It's eight o'clock", "Son las ocho"),
+        ("It's nine o'clock", "Son las nueve"),
+        ("It's ten o'clock", "Son las diez"),
+        ("It's eleven o'clock", "Son las once"),
+        ("It's twelve o'clock", "Son las doce"),
+
+        # Time phrases
+        ("on the dot", "en punto"),
+        ("five past", "y cinco"),
+        ("ten past", "y diez"),
+        ("quarter past", "y cuarto"),
+        ("twenty past", "y veinte"),
+        ("twenty-five past", "y veinticinco"),
+        ("half past", "y media"),
+        ("twenty-five to", "menos veinticinco"),
+        ("twenty to", "menos veinte"),
+        ("quarter to", "menos cuarto"),
+        ("ten to", "menos diez"),
+        ("five to", "menos cinco"),
+
+        # Parts of day
+        ("in the morning (a.m.)", "de la mañana"),
+        ("in the afternoon / evening", "de la tarde"),
+        ("at night", "de la noche"),
+        ("in the early hours / after midnight", "de la madrugada"),
+        ("I have a flight at three in the morning", "Tengo un vuelo a las tres de la madrugada"),
+
+        # One example per time phrase
+        ("It's exactly two o'clock", "Son las dos en punto"),
+        ("It's five past three", "Son las tres y cinco"),
+        ("It's ten past four", "Son las cuatro y diez"),
+        ("It's quarter past five", "Son las cinco y cuarto"),
+        ("It's twenty past six", "Son las seis y veinte"),
+        ("It's twenty-five past seven", "Son las siete y veinticinco"),
+        ("It's half past eight", "Son las ocho y media"),
+        ("It's twenty-five to nine", "Son las nueve menos veinticinco"),
+        ("It's twenty to ten", "Son las diez menos veinte"),
+        ("It's quarter to eleven", "Son las once menos cuarto"),
+        ("It's ten to twelve", "Son las doce menos diez"),
+        ("It's five to one", "Es la una menos cinco"),
+
+        # Additional examples
+        ("It's twenty-five past twelve", "Son las doce y veinticinco"),
+        ("It's twenty to seven", "Son las siete menos veinte"),
+        ("It's quarter to nine", "Son las nueve menos cuarto"),
+        ("It's quarter to seven", "Son las siete menos cuarto"),
+        ("It's twelve o'clock on the dot", "Son las doce en punto"),
+        ("It's ten to two", "Son las dos menos diez"),
+        ("It's ten to one", "Es la una menos diez"),
+        ("It's half past seven in the morning", "Son las siete y media de la mañana"),
+        ("It's five past two in the afternoon", "Son las dos y cinco de la tarde"),
+        ("It's almost two o'clock (a few minutes before)", "Son casi las dos"),
+        ("It's just gone two (a few minutes after)", "Son las dos pasadas"),
+    ],
+
+    "Frequency & Routine": [
+        ("often", "a menudo"),
+        ("almost never", "casi nunca"),
+        ("almost always", "casi siempre"),
+        ("almost every day", "casi todos los días"),
+        ("almost every month", "casi todos los meses"),
+        ("almost every Saturday", "casi todos los sábados"),
+        ("almost every afternoon", "casi todas las tardes"),
+        ("almost every week", "casi todas las semanas"),
+        ("once a week", "una vez a la semana"),
+        ("once a month", "una vez al mes"),
+        ("at noon / at midday", "al mediodía"),
     ],
 
     "Cost Comparisons & Examples": [
