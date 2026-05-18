@@ -67,6 +67,7 @@ decks = {
         ("My house is far from the center", "mi casa está lejos del centro"),
         ("I'm from Colchester", "Soy de Colchester"),
         ("Do you want to go to the cinema with me?", "quieres ir al cine conmigo?"),
+        ("Do you want to go to the gym with me in the morning?", "¿Quieres ir al gimnasio conmigo por la mañana?"),
         ("Okay! What movie do you want to see?", "vale! qué película quieres ver?"),
         ("This weekend I want to go out with my Spanish friends", "este fin de semana quiero salir con mis amigos españoles"),
         ("What a good idea!", "qué buena idea!"),
@@ -820,6 +821,123 @@ decks = {
         ("nosotros/as costamos", "we cost"),
         ("vosotros/as costáis", "you all cost"),
         ("ellos/ellas/ustedes cuestan", "they/you all cost"),
+
+        # levantarse (to get up)
+        ("to get up (infinitive)", "levantarse"),
+        ("I get up", "yo me levanto"),
+        ("you get up", "tú te levantas"),
+        ("he/she/you(formal) gets up", "él/ella/usted se levanta (formal)"),
+        ("we get up", "nosotros/as nos levantamos"),
+        ("you all get up", "vosotros/as os levantáis"),
+        ("they/you all(formal) get up", "ellos/as/ustedes se levantan (formal)"),
+
+        # despertarse (to wake up) — stem-changing e→ie
+        ("to wake up (infinitive)", "despertarse"),
+        ("I wake up", "yo me despierto"),
+        ("you wake up", "tú te despiertas"),
+        ("he/she/you(formal) wakes up", "él/ella/usted se despierta (formal)"),
+        ("we wake up", "nosotros/as nos despertamos"),
+        ("you all wake up", "vosotros/as os despertáis"),
+        ("they/you all(formal) wake up", "ellos/as/ustedes se despiertan (formal)"),
+
+        # acostarse (to go to bed) — stem-changing o→ue
+        ("to go to bed (infinitive)", "acostarse"),
+        ("I go to bed", "yo me acuesto"),
+        ("you go to bed", "tú te acuestas"),
+        ("he/she/you(formal) goes to bed", "él/ella/usted se acuesta (formal)"),
+        ("we go to bed", "nosotros/as nos acostamos"),
+        ("you all go to bed", "vosotros/as os acostáis"),
+        ("they/you all(formal) go to bed", "ellos/as/ustedes se acuestan (formal)"),
+
+        # ponerse (to put on / to wear)
+        ("to put on / to wear (infinitive)", "ponerse"),
+        ("I put on / I wear", "yo me pongo"),
+        ("you put on / you wear", "tú te pones"),
+        ("he/she/you(formal) puts on / wears", "él/ella/usted se pone (formal)"),
+        ("we put on / we wear", "nosotros/as nos ponemos"),
+        ("you all put on / you all wear", "vosotros/as os ponéis"),
+        ("they/you all(formal) put on / wear", "ellos/as/ustedes se ponen (formal)"),
+
+        # vestirse (to get dressed) — stem-changing e→i
+        ("to get dressed (infinitive)", "vestirse"),
+        ("I get dressed", "yo me visto"),
+        ("you get dressed", "tú te vistes"),
+        ("he/she/you(formal) gets dressed", "él/ella/usted se viste (formal)"),
+        ("we get dressed", "nosotros/as nos vestimos"),
+        ("you all get dressed", "vosotros/as os vestís"),
+        ("they/you all(formal) get dressed", "ellos/as/ustedes se visten (formal)"),
+
+        # ducharse (to shower)
+        ("to shower (infinitive)", "ducharse"),
+        ("I shower", "yo me ducho"),
+        ("you shower", "tú te duchas"),
+        ("he/she/you(formal) showers", "él/ella/usted se ducha (formal)"),
+        ("we shower", "nosotros/as nos duchamos"),
+        ("you all shower", "vosotros/as os ducháis"),
+        ("they/you all(formal) shower", "ellos/as/ustedes se duchan (formal)"),
+
+        # lavarse los dientes (to brush one's teeth)
+        ("to brush one's teeth (infinitive)", "lavarse los dientes"),
+        ("I brush my teeth", "yo me lavo los dientes"),
+        ("you brush your teeth", "tú te lavas los dientes"),
+        ("he/she/you(formal) brushes their teeth", "él/ella/usted se lava los dientes (formal)"),
+        ("we brush our teeth", "nosotros/as nos lavamos los dientes"),
+        ("you all brush your teeth", "vosotros/as os laváis los dientes"),
+        ("they/you all(formal) brush their teeth", "ellos/as/ustedes se lavan los dientes (formal)"),
+
+        # desayunar (to have breakfast)
+        ("to have breakfast (infinitive)", "desayunar"),
+        ("I have breakfast", "yo desayuno"),
+        ("you have breakfast", "tú desayunas"),
+        ("he/she/you(formal) has breakfast", "él/ella/usted desayuna (formal)"),
+        ("we have breakfast", "nosotros/as desayunamos"),
+        ("you all have breakfast", "vosotros/as desayunáis"),
+        ("they/you all(formal) have breakfast", "ellos/as/ustedes desayunan (formal)"),
+
+        # almorzar (to have lunch) — stem-changing o→ue
+        ("to have lunch (infinitive)", "almorzar"),
+        ("I have lunch", "yo almuerzo"),
+        ("you have lunch", "tú almuerzas"),
+        ("he/she/you(formal) has lunch", "él/ella/usted almuerza (formal)"),
+        ("we have lunch", "nosotros/as almorzamos"),
+        ("you all have lunch", "vosotros/as almorzáis"),
+        ("they/you all(formal) have lunch", "ellos/as/ustedes almuerzan (formal)"),
+
+        # cenar (to have dinner)
+        ("to have dinner (infinitive)", "cenar"),
+        ("I have dinner", "yo ceno"),
+        ("you have dinner", "tú cenas"),
+        ("he/she/you(formal) has dinner", "él/ella/usted cena (formal)"),
+        ("we have dinner", "nosotros/as cenamos"),
+        ("you all have dinner", "vosotros/as cenáis"),
+        ("they/you all(formal) have dinner", "ellos/as/ustedes cenan (formal)"),
+
+        # decir (to say / to tell) — irregular
+        ("to say / to tell (infinitive)", "decir"),
+        ("I say / I tell", "yo digo"),
+        ("you say / you tell", "tú dices"),
+        ("he/she/you(formal) says / tells", "él/ella/usted dice (formal)"),
+        ("we say / we tell", "nosotros/as decimos"),
+        ("you all say / you all tell", "vosotros/as decís"),
+        ("they/you all(formal) say / tell", "ellos/as/ustedes dicen (formal)"),
+
+        # creer (to believe / to think)
+        ("to believe / to think (infinitive)", "creer"),
+        ("I believe / I think", "yo creo"),
+        ("you believe / you think", "tú crees"),
+        ("he/she/you(formal) believes / thinks", "él/ella/usted cree (formal)"),
+        ("we believe / we think", "nosotros/as creemos"),
+        ("you all believe / you all think", "vosotros/as creéis"),
+        ("they/you all(formal) believe / think", "ellos/as/ustedes creen (formal)"),
+
+        # madrugar (to get up very early)
+        ("to get up very early (infinitive)", "madrugar"),
+        ("I get up very early", "yo madrugo"),
+        ("you get up very early", "tú madrugаs"),
+        ("he/she/you(formal) gets up very early", "él/ella/usted madruga (formal)"),
+        ("we get up very early", "nosotros/as madrugamos"),
+        ("you all get up very early", "vosotros/as madrugáis"),
+        ("they/you all(formal) get up very early", "ellos/as/ustedes madrugan (formal)"),
     ],
 
     "Preterite Verb Conjugations": [
@@ -2476,6 +2594,24 @@ decks = {
         ("sure / confident (masc. pl.)", "seguros"),
         ("sure / confident (fem. pl.)", "seguras"),
 
+        # Dormilón (sleepyhead)
+        ("sleepyhead (masc. sing.)", "dormilón"),
+        ("sleepyhead (fem. sing.)", "dormilona"),
+        ("sleepyheads (masc. pl.)", "dormilones"),
+        ("sleepyheads (fem. pl.)", "dormilonas"),
+
+        # Comilón (big eater)
+        ("big eater / foodie (masc. sing.)", "comilón"),
+        ("big eater / foodie (fem. sing.)", "comilona"),
+        ("big eaters (masc. pl.)", "comilones"),
+        ("big eaters (fem. pl.)", "comilonas"),
+
+        # Trabajador (hardworking)
+        ("hardworking (masc. sing.)", "trabajador"),
+        ("hardworking (fem. sing.)", "trabajadora"),
+        ("hardworking (masc. pl.)", "trabajadores"),
+        ("hardworking (fem. pl.)", "trabajadoras"),
+
         # Example sentences per personality type
         ("He/She doesn't smoke or drink, and takes great care of his/her diet", "No fuma ni bebe alcohol, y cuida mucho su alimentación"),
         ("He/She really likes spending time with his/her family and attending family gatherings", "Le gusta mucho pasar tiempo con su familia y asistir a reuniones familiares"),
@@ -2486,6 +2622,18 @@ decks = {
         ("He/She doesn't like going out at all. Prefers to stay at home", "No le gusta nada salir. Prefiere quedarse en casa"),
         ("He/She is a very structured and methodical person. Writes all their plans in a diary", "Es una persona muy estructurada y metódica. Escribe todos sus planes en una agenda"),
         ("He/She doesn't like working. Prefers to be on the sofa watching TV all day", "No le gusta trabajar. Prefiere estar en el sofá y ver la tele todo el día"),
+
+        # "Creo que..." personality example sentences
+        ("I think Maribel is healthy because she eats salads", "Creo que Maribel es sana porque come ensaladas"),
+        ("My partner says I'm strange because I always wear black", "Mi pareja dice que soy rara porque siempre llevo ropa de color negro"),
+        ("I think Eduardo is intellectual because he wears glasses", "Creo que Eduardo es intelectual porque usa las gafas"),
+        ("I think Eva and Manuel are party-lovers because they drink red wine and play games", "Creo que Eva y Manuel son fiesteros porque beben vino tinto y juegan juegos"),
+        ("I think Nieves is a party-lover because she drinks cocktails", "Creo que Nieves es fiestera porque bebe cócteles"),
+        ("I think Luis is a homebody because he eats at home with his family", "Creo que Luis es casero porque come en casa con su familia"),
+        ("I think Patricia is lazy because she is always sleepy", "Creo que Patricia es perezosa porque siempre tiene sueño"),
+        ("I think Gonzalo is organised because his desk is very organised", "Creo que Gonzalo es organizado porque su escritorio es muy organizado"),
+        ("I think Gonzalo is organised because his table is very organised", "Creo que Gonzalo es organizado porque su mesa es muy organizada"),
+        ("I think the Addams are weird because they dress strangely", "Creo que los Addams son raros porque se visten de forma extraña"),
     ],
 
     "SER + Noun": [
@@ -3127,6 +3275,74 @@ decks = {
         ("once a week", "una vez a la semana"),
         ("once a month", "una vez al mes"),
         ("at noon / at midday", "al mediodía"),
+        ("twice a week", "dos veces a la semana"),
+        ("two or three times a month", "dos o tres veces al mes"),
+        ("first thing in the morning", "a primera hora de la mañana"),
+        ("at the usual time", "a la hora de siempre"),
+
+        # Routine vocabulary
+        ("the routine / daily routine", "la rutina"),
+        ("to get up very early / to be an early riser", "madrugar"),
+        ("to get up in a good mood", "levantarse de buen humor"),
+        ("you get up in a good mood", "te levantas de buen humor"),
+        ("to have an afternoon snack", "merendar"),
+        ("afternoon snack", "la merienda"),
+        ("he/she has breakfast", "desayuna"),
+        ("he/she has an afternoon snack", "merienda"),
+        ("working day / work shift", "jornada laboral"),
+        ("approximately / around (time)", "sobre"),
+        ("quickly", "rápidamente"),
+        ("during the day", "durante el día"),
+        ("commitments / plans", "compromisos"),
+
+        # Questions about routine
+        ("How long do you spend having breakfast?", "¿Cuánto tiempo dedicas a desayunar?"),
+        ("What time do you feel most productive?", "¿A qué hora te sientes más productivo/a?"),
+        ("What part of the day do you prefer to do sport?", "¿En qué momento del día prefieres hacer deporte?"),
+        ("How often do you go out for a drink or dancing?", "¿Con qué frecuencia sales a tomar algo o a bailar?"),
+        ("How often do you make plans after class or work?", "¿Con qué frecuencia haces planes después de clase o del trabajo?"),
+        ("When you have no commitments the next day, what time do you go to bed?", "¿Cuando no tienes compromisos al día siguiente, a qué hora te acuestas?"),
+
+        # Survey answers
+        ("Five or ten minutes", "Cinco o diez minutos"),
+        ("To get up very early", "Levantarme muy temprano"),
+        ("To study during the day", "Estudiar durante el día"),
+        ("To study at night", "Estudiar por la noche"),
+        ("Your working day is six hours", "Tu jornada laboral es de seis horas"),
+        ("From 10am to 4pm", "De 10 a 16 h"),
+        ("Full of energy", "Con mucha energía"),
+        ("Tired but you still have energy to read or watch TV for a while", "Cansado/a pero todavía tienes energía para leer o ver la televisión un rato"),
+        ("Once a week, sometimes twice", "Una vez a la semana, a veces, dos"),
+
+        # Third-person routine sentences
+        ("She does sport almost every day", "Casi todos los días hace deporte"),
+        ("Once a week she does yoga", "Una vez a la semana hace yoga"),
+        ("Twice a week she goes to English classes", "Dos veces a la semana va a clases de inglés"),
+        ("On Sundays she eats with the family", "Los domingos come con la familia"),
+        ("Normally, on Fridays she has dinner with friends", "Normalmente, los viernes cena con amigos"),
+        ("She sometimes goes to the theatre", "A veces va al teatro"),
+        ("She often goes out with Fernando", "A menudo sale con Fernando"),
+        ("He gets up at half past six", "Se levanta a las seis y media"),
+        ("He starts work at eight on the dot", "Empieza a trabajar a las ocho en punto"),
+        ("He eats at twelve on the dot", "Come a las doce en punto"),
+        ("He leaves work at half past five", "Sale del trabajo a las cinco y media"),
+        ("He has a snack at eight on the dot in the evening", "Merienda a las ocho en punto de la tarde"),
+        ("He has dinner at seven on the dot", "Cena a las siete en punto"),
+        ("He goes to bed at eleven on the dot", "Se acuesta a las once en punto"),
+
+        # First-person routine sentences
+        ("I wake up every day at approximately 7:30", "Me despierto todos los días aproximadamente a las 7:30"),
+        ("And then I get up quickly", "Y después me levanto rápidamente"),
+        ("At about 7:40 I have chicken for breakfast, I use my phone or computer. I get dressed and leave home to go to the gym", "Sobre las 7:40 tomo pollo para desayuno, uso el móvil o la computadora. Me visto y salgo de casa para ir al gimnasio"),
+
+        # Daily habits
+        ("to sleep eight hours or more", "dormir ocho horas o más"),
+        ("to make the bed", "hacer la cama"),
+        ("to eat with the family", "comer con la familia"),
+        ("to have dinner outside / eat out", "cenar fuera de casa"),
+        ("to brush your teeth", "lavarte los dientes"),
+        ("to drink coffee", "tomar café"),
+        ("to leave work on time", "salir puntual del trabajo"),
     ],
 
     "Cost Comparisons & Examples": [

@@ -17,6 +17,7 @@ A comprehensive Spanish pronunciation training deck for Anki with Text-to-Speech
 **iOS:**
 - Install [AnkiMobile](https://apps.apple.com/app/ankimobile-flashcards/id373493387) from the App Store
 - $24.99 (Alas a one-off payment to Anki's team but supports development)
+- **Free alternative**: [Quizlet](https://apps.apple.com/us/app/quizlet-more-than-flashcards/id546473125) — import the deck content for free on iOS
 
 ### Step 2: Download the Deck
 
