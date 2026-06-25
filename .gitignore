@@ -1,1 +1,5 @@
 CLAUDE.md
+
+# Generated TTS audio (content-addressed cache; regenerated via tts_audio.py)
+tts_cache/
+tts_samples/*.mp3

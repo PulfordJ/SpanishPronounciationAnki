@@ -13,7 +13,14 @@ import requests
 import time  # <-- add near the top with other imports
 from decks_data import decks  # <-- Import your data dictionary
 
+import tts_audio  # embedded-audio generation + content-addressed cache
+
 ANKI_CONNECT_URL = "http://localhost:8765"
+
+# Audio fields hold a `[sound:...]` reference to a pre-generated MP3 so the
+# deck plays on any importer (FSRS Mobile Flashcards on iOS, AnkiDroid, etc.)
+# rather than relying on Anki's on-the-fly {{tts}} directive.
+AUDIO_FIELDS = {"AudioES": "es_ES", "AudioLA": "es_US"}
 
 
 def invoke(action, **params):
@@ -30,40 +37,69 @@ def invoke(action, **params):
 MODEL_NAME = "Spanish Pronunciation Model (EN->ES TTS)"
 
 
-def ensure_model_exists():
-    """Create model if missing."""
-    existing_models = invoke("modelNames")
-    if MODEL_NAME in existing_models:
-        print(f"✅ Model already exists: {MODEL_NAME}")
-        return
+MODEL_FIELDS = ["English", "Spanish", "AudioES", "AudioLA", "Tags"]
 
-    print(f"⚙️ Creating model: {MODEL_NAME}")
-    model = {
-        "modelName": MODEL_NAME,
-        "inOrderFields": ["English", "Spanish", "Tags"],
-        "css": """
+MODEL_CSS = """
 .card { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; font-size: 22px; text-align: center; color: #111; background-color: #fff; }
 hr { border: none; border-top: 1px solid #ddd; }
-""",
-        "cardTemplates": [
-            {
-                "Name": "EN->ES with TTS",
-                "Front": "{{English}}",
-                "Back": (
-                    "{{FrontSide}}"
-                    "<hr id='answer'>"
-                    "<div>{{tts es_ES voices=Google :Spanish}}</div>"
-                    "<div style='font-size:26px; margin-top:8px;'><b>{{Spanish}}</b></div>"
-                    "<div style='font-size:18px; color:#666; margin-top:6px;'>({{English}})</div>"
-                    "<br>"
-                    "<div style='font-size:16px; color:#888; margin-top:10px;'>Latin American Spanish:</div>"
-                    "<div>{{tts es_US voices=Google:Spanish}}</div>"
-                ),
-            }
-        ],
+.accent { font-size:14px; color:#888; margin-top:10px; }
+"""
+
+CARD_NAME = "EN->ES with TTS"
+CARD_FRONT = "{{English}}"
+# Plays bundled MP3s via [sound:...] in the audio fields instead of {{tts}},
+# so audio works in importers that don't implement Anki's TTS directive (iOS).
+CARD_BACK = (
+    "{{FrontSide}}"
+    "<hr id='answer'>"
+    "<div style='font-size:26px; margin-top:8px;'><b>{{Spanish}}</b></div>"
+    "<div style='font-size:18px; color:#666; margin-top:6px;'>({{English}})</div>"
+    "<div class='accent'>European Spanish:</div>"
+    "<div>{{AudioES}}</div>"
+    "<div class='accent'>Latin American Spanish:</div>"
+    "<div>{{AudioLA}}</div>"
+)
+
+
+def ensure_model_exists():
+    """Create the model if missing, or reconcile an existing one.
+
+    Reconciling matters for collections that already have the old TTS-template
+    model: we add the audio fields and switch the card template to play
+    bundled MP3s.
+    """
+    if MODEL_NAME not in invoke("modelNames"):
+        print(f"⚙️ Creating model: {MODEL_NAME}")
+        invoke(
+            "createModel",
+            modelName=MODEL_NAME,
+            inOrderFields=MODEL_FIELDS,
+            css=MODEL_CSS,
+            cardTemplates=[{"Name": CARD_NAME, "Front": CARD_FRONT, "Back": CARD_BACK}],
+        )
+        print(f"✅ Created model: {MODEL_NAME}")
+        return
+
+    print(f"🔧 Reconciling existing model: {MODEL_NAME}")
+    existing_fields = invoke("modelFieldNames", modelName=MODEL_NAME)
+    for field in ("AudioES", "AudioLA"):
+        if field not in existing_fields:
+            invoke("modelFieldAdd", modelName=MODEL_NAME, fieldName=field, index=len(existing_fields))
+            existing_fields.append(field)
+            print(f"   • added field: {field}")
+
+    invoke("updateModelTemplates", model={"name": MODEL_NAME, "templates": {CARD_NAME: {"Front": CARD_FRONT, "Back": CARD_BACK}}})
+    invoke("updateModelStyling", model={"name": MODEL_NAME, "css": MODEL_CSS})
+    print("✅ Model reconciled (audio fields + [sound:] template).")
+
+
+def audio_field_values(spanish):
+    """`[sound:...]` references for both accents of a Spanish phrase."""
+    es = spanish.strip()
+    return {
+        field: f"[sound:{tts_audio.audio_filename(es, voice_key)}]"
+        for field, voice_key in AUDIO_FIELDS.items()
     }
-    invoke("createModel", **model)
-    print(f"✅ Created model: {MODEL_NAME}")
 
 
 # ---------- Decks ----------
@@ -114,7 +150,12 @@ def add_note(deck_name, english, spanish, tags=None):
     note = {
         "deckName": deck_name,
         "modelName": MODEL_NAME,
-        "fields": {"English": english, "Spanish": spanish, "Tags": ", ".join(tags) if tags else ""},
+        "fields": {
+            "English": english,
+            "Spanish": spanish,
+            "Tags": ", ".join(tags) if tags else "",
+            **audio_field_values(spanish),
+        },
         "options": {"allowDuplicate": False},
         "tags": tags or [],
     }
@@ -162,7 +203,7 @@ def filter_addable_notes_all_decks(decks_data):
             {
                 "deckName": full,
                 "modelName": MODEL_NAME,
-                "fields": {"English": en, "Spanish": es, "Tags": deck_name.lower().replace(" ", "_")},
+                "fields": {"English": en, "Spanish": es, "Tags": deck_name.lower().replace(" ", "_"), **audio_field_values(es)},
                 "options": {"allowDuplicate": False},
                 "tags": [deck_name.lower().replace(" ", "_")],
             }
@@ -182,7 +223,7 @@ def filter_addable_notes_all_decks(decks_data):
                     {
                         "deckName": f"{ROOT_DECK}::{deck_name}",
                         "modelName": MODEL_NAME,
-                        "fields": {"English": en, "Spanish": es, "Tags": deck_name.lower().replace(" ", "_")},
+                        "fields": {"English": en, "Spanish": es, "Tags": deck_name.lower().replace(" ", "_"), **audio_field_values(es)},
                         "options": {"allowDuplicate": False},
                         "tags": [deck_name.lower().replace(" ", "_")],
                     }
@@ -220,6 +261,68 @@ def add_notes_all_decks(filtered_results):
 
 
 
+# ---------- Audio: generate + upload media ----------
+def _chunked(seq, size):
+    for i in range(0, len(seq), size):
+        yield seq[i : i + size]
+
+
+def generate_audio():
+    """Synthesize any missing MP3s into the local cache (skips cached ones)."""
+    texts = tts_audio.collect_unique_spanish()
+    print(f"\n🔊 Ensuring audio for {len(texts)} phrases x {len(tts_audio.VOICES)} accents...")
+    stats = tts_audio.generate_missing(texts)
+    print(f"   • generated {stats['generated']} new, {stats['cached']} already cached")
+
+
+def store_audio_media():
+    """Copy cached MP3s into Anki's media collection (only files not present)."""
+    already = set(invoke("getMediaFilesNames", pattern=f"{tts_audio.MEDIA_PREFIX}*.mp3"))
+    actions = []
+    for text in tts_audio.collect_unique_spanish():
+        for voice_key in tts_audio.VOICES:
+            filename = tts_audio.audio_filename(text, voice_key)
+            if filename in already:
+                continue
+            path = tts_audio.cache_path(text, voice_key)
+            if not path.exists():
+                print(f"   ⚠️ missing cached audio (run generate first): {filename}")
+                continue
+            actions.append({"action": "storeMediaFile", "params": {"filename": filename, "path": str(path)}})
+
+    if not actions:
+        print("🎵 Media already up to date in Anki.")
+        return
+
+    print(f"🎵 Uploading {len(actions)} audio file(s) to Anki media...")
+    for batch in _chunked(actions, 500):
+        invoke("multi", actions=batch)
+    print("✅ Media upload complete.")
+
+
+def reconcile_existing_audio():
+    """Populate audio fields on notes that predate the embedded-audio change."""
+    note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
+    if not note_ids:
+        return
+    updates = []
+    for info in invoke("notesInfo", notes=note_ids):
+        fields = info.get("fields", {})
+        spanish = fields.get("Spanish", {}).get("value", "").strip()
+        if not spanish:
+            continue
+        desired = audio_field_values(spanish)
+        if any(fields.get(f, {}).get("value", "") != v for f, v in desired.items()):
+            updates.append({"action": "updateNoteFields", "params": {"note": {"id": info["noteId"], "fields": desired}}})
+
+    if not updates:
+        return
+    print(f"🩹 Updating audio fields on {len(updates)} existing note(s)...")
+    for batch in _chunked(updates, 500):
+        invoke("multi", actions=batch)
+    print("✅ Existing notes updated.")
+
+
 # ---------- Run ----------
 def main():
     start_time = time.time()
@@ -240,9 +343,13 @@ def main():
         exit(1)
     
     print("✅ No internal duplicates found.")
-    
+
+    # Generate any missing audio before touching Anki so notes can reference it.
+    generate_audio()
+
     ensure_model_exists()
     create_decks()
+    store_audio_media()
 
     print("\n🔍 Checking which cards can be added...")
     filtered = filter_addable_notes_all_decks(decks)
@@ -250,6 +357,9 @@ def main():
 
     print("\n🧩 Adding cards in bulk...")
     add_notes_all_decks(filtered)
+
+    # Backfill audio onto notes that already existed before this change.
+    reconcile_existing_audio()
 
     elapsed = time.time() - start_time
     minutes, seconds = divmod(elapsed, 60)
