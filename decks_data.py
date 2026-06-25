@@ -938,6 +938,51 @@ decks = {
         ("we get up very early", "nosotros/as madrugamos"),
         ("you all get up very early", "vosotros/as madrugáis"),
         ("they/you all(formal) get up very early", "ellos/as/ustedes madrugan (formal)"),
+
+        # poner (to put / to place) — irregular yo form
+        ("to put / to place (infinitive)", "poner"),
+        ("I put / I place", "yo pongo"),
+        ("you put / you place", "tú pones"),
+        ("he/she/you(formal) puts / places", "él/ella/usted pone (formal)"),
+        ("we put / we place", "nosotros/as ponemos"),
+        ("you all put / you all place", "vosotros/as ponéis"),
+        ("they/you all(formal) put / place", "ellos/as/ustedes ponen (formal)"),
+
+        # traer (to bring) — irregular yo form
+        ("to bring (infinitive)", "traer"),
+        ("I bring", "yo traigo"),
+        ("you bring", "tú traes"),
+        ("he/she/you(formal) brings", "él/ella/usted trae (formal)"),
+        ("we bring", "nosotros/as traemos"),
+        ("you all bring", "vosotros/as traéis"),
+        ("they/you all(formal) bring", "ellos/as/ustedes traen (formal)"),
+
+        # pedir (to ask for / to order) — stem-changing e→i
+        ("to ask for / to order (infinitive)", "pedir"),
+        ("I ask for / I order", "yo pido"),
+        ("you ask for / you order", "tú pides"),
+        ("he/she/you(formal) asks for / orders", "él/ella/usted pide (formal)"),
+        ("we ask for / we order", "nosotros/as pedimos"),
+        ("you all ask for / you all order", "vosotros/as pedís"),
+        ("they/you all(formal) ask for / order", "ellos/as/ustedes piden (formal)"),
+
+        # volver (to return / to come back) — stem-changing o→ue
+        ("to return / to come back (infinitive)", "volver"),
+        ("I return / I come back", "yo vuelvo"),
+        ("you return / you come back", "tú vuelves"),
+        ("he/she/you(formal) returns / comes back", "él/ella/usted vuelve (formal)"),
+        ("we return / we come back", "nosotros/as volvemos"),
+        ("you all return / you all come back", "vosotros/as volvéis"),
+        ("they/you all(formal) return / come back", "ellos/as/ustedes vuelven (formal)"),
+
+        # merendar (to have an afternoon snack) — stem-changing e→ie
+        ("to have an afternoon snack (infinitive)", "merendar"),
+        ("I have an afternoon snack", "yo meriendo"),
+        ("you have an afternoon snack", "tú meriendas"),
+        ("he/she/you(formal) has an afternoon snack", "él/ella/usted merienda (formal)"),
+        ("we have an afternoon snack", "nosotros/as merendamos"),
+        ("you all have an afternoon snack", "vosotros/as merendáis"),
+        ("they/you all(formal) have an afternoon snack", "ellos/as/ustedes meriendan (formal)"),
     ],
 
     "Preterite Verb Conjugations": [
