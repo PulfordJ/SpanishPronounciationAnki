@@ -271,8 +271,13 @@ def generate_audio():
     """Synthesize any missing MP3s into the local cache (skips cached ones)."""
     texts = tts_audio.collect_unique_spanish()
     print(f"\n🔊 Ensuring audio for {len(texts)} phrases x {len(tts_audio.VOICES)} accents...")
+    start = time.perf_counter()
+    print(f"   • start: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     stats = tts_audio.generate_missing(texts)
+    elapsed = time.perf_counter() - start
+    print(f"   • end:   {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"   • generated {stats['generated']} new, {stats['cached']} already cached")
+    print(f"   • time taken: {elapsed:.2f}s")
 
 
 def store_audio_media():
