@@ -1,0 +1,648 @@
+"""
+tag_mapping.py — Aula Internacional Plus 1 tag mapping for Spanish Pronunciation Trainer
+========================================================================================
+
+Maps every Anki card to hierarchical tags aligned with the textbook
+*Aula Internacional Plus 1* (Difusión, A1).
+
+Tag hierarchy:
+    aula::unidad_0 … aula::unidad_9, aula::extra   — textbook unit
+    skill::vocabulary / grammar / phrases / pronunciation / dialogue
+    priority::core / extended / reference
+
+Usage:
+    tags = get_tags_for_card("Phrases", "I want to eat...", "Quiero comer...")
+    # → ["aula::unidad_2", "skill::phrases", "priority::core", "phrases"]
+"""
+
+from __future__ import annotations
+
+
+# ---------------------------------------------------------------------------
+# 1. Default tags for each subdeck
+# ---------------------------------------------------------------------------
+
+SUBDECK_TAG_DEFAULTS: dict[str, list[str]] = {
+    # ── Unidad 0: En el aula ──────────────────────────────────────────
+    "Help": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "Classroom Instructions": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "Alphabet & Pronunciation": ["aula::unidad_0", "skill::pronunciation", "priority::core"],
+    "Saludar (Greetings)": ["aula::unidad_0", "skill::vocabulary", "priority::core"],
+    "Despedirse (Goodbyes)": ["aula::unidad_0", "skill::vocabulary", "priority::core"],
+    "Classroom Objects": ["aula::unidad_0", "skill::vocabulary", "priority::core"],
+    "Pronunciation Practice": ["aula::unidad_0", "skill::pronunciation", "priority::extended"],
+    "Numbers": ["aula::unidad_0", "skill::vocabulary", "priority::core"],
+
+    # ── Unidad 1: Nosotros ────────────────────────────────────────────
+    "Dialogue": ["aula::unidad_1", "skill::dialogue", "priority::core"],
+    "Sample Introductions": ["aula::unidad_1", "skill::dialogue", "priority::core"],
+    "Nationalities & Countries": ["aula::unidad_1", "skill::vocabulary", "priority::extended"],
+    "Countries": ["aula::unidad_1", "skill::vocabulary", "priority::reference"],
+    "Professions": ["aula::unidad_1", "skill::vocabulary", "priority::extended"],
+    "Languages & Culture": ["aula::unidad_1", "skill::vocabulary", "priority::core"],
+    "Interrogative Words": ["aula::unidad_1", "skill::grammar", "priority::core"],
+    "Workplaces": ["aula::unidad_1", "skill::vocabulary", "priority::extended"],
+    "Famous People & Examples": ["aula::unidad_1", "skill::vocabulary", "priority::extended"],
+
+    # ── Unidad 2: Quiero aprender español ─────────────────────────────
+    "Verb Conjugations": ["aula::unidad_2", "skill::grammar", "priority::extended"],
+    "Preguntar (Questions)": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Responses": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Leisure Activities & Language Learning": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "Talking About Reasons to Study Spanish": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Querer Practice": ["aula::unidad_2", "skill::grammar", "priority::core"],
+    "Future Plans & Desires": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "Common Verbs & Phrases": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "Reasons & Purposes (Por vs Para)": ["aula::unidad_2", "skill::grammar", "priority::extended"],
+    "Requests & Needs": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Mini Dialogues": ["aula::unidad_2", "skill::dialogue", "priority::extended"],
+
+    # ── Unidad 3: ¿Dónde está Santiago? ───────────────────────────────
+    "Geography": ["aula::unidad_3", "skill::vocabulary", "priority::core"],
+    "Weather": ["aula::unidad_3", "skill::vocabulary", "priority::core"],
+    "Grammar (Articles & Gender)": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "Prepositions & Contractions": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "Transportation & Going Places": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "Food & Culture": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "Cultural Festivals & Events": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "Travel & Packing": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+
+    # ── Unidad 4: ¿Cuál prefieres? ────────────────────────────────────
+    "Shopping": ["aula::unidad_4", "skill::vocabulary", "priority::core"],
+    "Clothing & Accessories": ["aula::unidad_4", "skill::vocabulary", "priority::core"],
+    "Colors": ["aula::unidad_4", "skill::vocabulary", "priority::core"],
+    "Grammar - Demonstrative Pronouns": ["aula::unidad_4", "skill::grammar", "priority::core"],
+    "Math & Quantities": ["aula::unidad_4", "skill::vocabulary", "priority::extended"],
+    "Cost Comparisons & Examples": ["aula::unidad_4", "skill::phrases", "priority::extended"],
+
+    # ── Unidad 5: Tus amigos son mis amigos ───────────────────────────
+    "SER + Adjective": ["aula::unidad_5", "skill::grammar", "priority::core"],
+    "Descriptive Adjectives": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "Personality Adjectives": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "SER + Noun": ["aula::unidad_5", "skill::grammar", "priority::core"],
+    "Physical Descriptions": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "Grammar (Tener & Plurals)": ["aula::unidad_5", "skill::grammar", "priority::core"],
+    "Feelings & Concepts": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "Virtues & Abstract Words": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+
+    # ── Unidad 6: Día a día ───────────────────────────────────────────
+    "Telling the Time": ["aula::unidad_6", "skill::vocabulary", "priority::core"],
+    "Frequency & Routine": ["aula::unidad_6", "skill::vocabulary", "priority::core"],
+    "Days of the Week": ["aula::unidad_6", "skill::vocabulary", "priority::core"],
+    "Gustar & Encantar": ["aula::unidad_6", "skill::grammar", "priority::core"],
+
+    # ── Extra / mixed ─────────────────────────────────────────────────
+    "Phrases": ["aula::extra", "skill::phrases", "priority::extended"],
+    "Miscellaneous": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "Preterite Verb Conjugations": ["aula::extra", "skill::grammar", "priority::extended"],
+    "Animals & Nature": ["aula::extra", "skill::vocabulary", "priority::extended"],
+}
+
+
+# ---------------------------------------------------------------------------
+# 2. Core subsets for reference-heavy decks
+# ---------------------------------------------------------------------------
+
+CORE_NATIONALITIES: set[str] = {
+    # ── Spanish-speaking nationalities (masc + fem where available) ──
+    "Spanish (masc.)", "Spanish (fem.)",
+    "Mexican (masc.)", "Mexican (fem.)",
+    "Argentine (masc.)", "Argentine (fem.)",
+    "Peruvian", "Venezuelan", "Chilean", "Chilean (fem.)",
+    "Cuban", "Ecuadorian", "Panamanian", "Nicaraguan", "Guinean",
+    # ── Major world nationalities ─────────────────────────────────────
+    "Canadian",
+    "Brazilian (masc.)", "Brazilian (fem.)",
+    "German (masc.)", "German (fem.)",
+    "Moroccan (masc.)", "Moroccan (fem.)",
+    "French (masc.)", "French (fem.)",
+    "English (masc.)", "English (fem.)",
+    "American / from the U.S.", "American (masc.)", "American (fem.)",
+    "Italian (masc.)", "Italian (fem.)",
+    "Japanese (masc.)", "Japanese (fem.)",
+    "Chinese (masc.)", "Chinese (fem.)",
+    "Indian (masc.)", "Indian (fem.)",
+    "Russian (fem.)", "Russian (masc.)",
+    "Portuguese (masc.)", "Portuguese (fem.)",
+    "Belgian", "Irish",
+    "Swiss",
+    # ── Country names for the above ───────────────────────────────────
+    "Canada", "Brazil", "Germany", "Morocco", "Argentina", "France",
+    "England", "Spain", "Chile", "Switzerland", "Norway", "Sweden",
+    # ── Intro sentences ───────────────────────────────────────────────
+    "He is French", "She is French", "He is Italian", "She is Italian",
+    "I am Ukrainian", "I am from Ukraine",
+    "My name is Antonio, I am from Peru",
+    "My name is Jacob, I am Belgian",
+    "My name is John, I am British, I am from the United Kingdom",
+    "Canadian is from Canada, right?",
+    "Brazilian is from Brazil, right?",
+    "German is from Germany, right?",
+    "Moroccan is from Morocco, right?",
+    "Argentine is from Argentina, right?",
+    "French (fem.) is from France, right?",
+}
+
+CORE_PROFESSIONS: set[str] = {
+    "teacher (masc.)", "teacher (fem.)",
+    "professor (masc.)", "professor (fem.)",
+    "student",
+    "doctor (masc.)", "doctor (fem.)",
+    "nurse (masc.)", "nurse (fem.)",
+    "engineer (masc.)", "engineer (fem.)",
+    "lawyer (masc.)", "lawyer (fem.)",
+    "waiter", "waitress",
+    "journalist", "journalist (masc.)", "journalist (fem.)",
+    "police officer",
+    "architect", "architect (masc.)", "architect (fem.)",
+    "cook / chef (masc.)", "cook / chef (fem.)",
+    "writer (masc.)", "writer (fem.)",
+    "secretary (masc.)", "secretary (fem.)",
+    "designer (masc.)", "designer (fem.)",
+    "scientist (masc.)", "scientist (fem.)",
+    "dentist",
+    "receptionist",
+    "artist",
+    "shop assistant",
+    "accountant",
+    "translator", "translator (masc.)", "translator (fem.)",
+    "hairdresser (masc.)", "hairdresser (fem.)",
+    "editor (masc.)", "editor (fem.)",
+    # Sentences using core professions
+    "She works as a waitress and works in a hospital",
+    "He works as a shop assistant and works in a store",
+    "She works as a scientist and works in a laboratory",
+    "He works as a receptionist and works in a language school",
+    "My friend Carl is a nurse and works at his patients' house",
+    "My friend Alex is a software engineer and works in an office",
+    "My friend Ross is in business and works from home",
+}
+
+CORE_COUNTRIES: set[str] = {
+    # Spanish-speaking countries
+    "Mexico", "Colombia", "Peru", "Venezuela", "Ecuador",
+    "Guatemala", "Cuba", "Dominican Republic", "Honduras", "El Salvador",
+    "Nicaragua", "Costa Rica", "Panama", "Uruguay", "Paraguay",
+    "Bolivia", "Puerto Rico", "Equatorial Guinea",
+    # Already in Nationalities: Spain, Argentina, Chile
+    # Major world countries
+    "United States", "United Kingdom", "France", "Italy", "Germany",
+    "Japan", "China", "India", "Brazil", "Portugal", "Russia",
+    "Australia", "Morocco", "Canada",
+}
+
+
+# ---------------------------------------------------------------------------
+# 3. Per-card tag overrides for the Phrases deck
+# ---------------------------------------------------------------------------
+
+PHRASE_TAG_OVERRIDES: dict[str, list[str]] = {
+    # ── Unidad 0: classroom / help ────────────────────────────────────
+    "What does it mean?": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "I don't know": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "noun": ["aula::unidad_0", "skill::vocabulary", "priority::extended"],
+    "adjective": ["aula::unidad_0", "skill::vocabulary", "priority::extended"],
+    "Sorry, I don't know": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "Sorry, I don't speak Japanese": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "Sorry, I speak a bit of Spanish": ["aula::unidad_0", "skill::phrases", "priority::core"],
+
+    # ── Unidad 1: personal info / identity ────────────────────────────
+    "I'm from Colchester": ["aula::unidad_1", "skill::phrases", "priority::core"],
+    "What is your profession or job?": ["aula::unidad_1", "skill::phrases", "priority::core"],
+    "residence": ["aula::unidad_1", "skill::vocabulary", "priority::core"],
+    "my native language": ["aula::unidad_1", "skill::vocabulary", "priority::core"],
+    "languages that he/she speaks": ["aula::unidad_1", "skill::phrases", "priority::core"],
+    "Are you multilingual?": ["aula::unidad_1", "skill::phrases", "priority::extended"],
+    "We say that a person is multilingual when they communicate in more than one language": ["aula::unidad_1", "skill::phrases", "priority::extended"],
+    "to have colleagues from different nationalities": ["aula::unidad_1", "skill::phrases", "priority::extended"],
+    "How are you today?": ["aula::unidad_1", "skill::phrases", "priority::core"],
+
+    # ── Unidad 2: learning / querer / verbs ───────────────────────────
+    "to review / revise": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "What are you doing this afternoon?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "What do you mean, why?": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "What day is it today?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "clear as water": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "I see a movie": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I listen": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I read a novel / You read a book": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "You write a diary": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "We write exercises": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "They practice pronunciation": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "She does exercises": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "You all do an exchange": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I take a Spanish course": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "What do you want to do tomorrow?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "What do you want to do on your vacation?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "What do you want to learn this year?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "What don't you want to do this week?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Tomorrow I want to...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "On my vacation I want to...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "This year I want to learn...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "This week I don't want to...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "to travel (for tourism or for work)": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "to watch series or movies from countries all over the world": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "to read and write on social networks": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "to study in another country": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "in my Spanish": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "for tourism": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "sweet inn": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "each": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "all over the world": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "social networks": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "speak": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "study": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "work": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "cook": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "to have": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "can/be able to": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "go out/go out for fun": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "to fly": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "to feel": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "want/love": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "to be (location/state)": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "to see": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "to do/make": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "exchange": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "gym exercises or study exercises": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "Do you want to go to the cinema with me?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Do you want to go to the gym with me in the morning?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Okay! What movie do you want to see?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "This weekend I want to go out with my Spanish friends": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "What a good idea!": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "What do you want to do tomorrow night?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I want to go out to dinner and then to the disco": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I want to learn another language": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Oh really? Which one?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Mercedes and I want to go to Rosalia's concert. Do you want to go with us?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Yes, of course": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Do you have plans for this weekend?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "Yes, Eduardo and I want to go on an excursion": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "because I want to eat...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I want to eat...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I want to visit...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I want to see...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I want to practice...": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "for the food": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "for the dancing": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "for the people": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "why he/she studies Spanish": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "what things he/she does to learn Spanish": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "plans for the future": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "learning": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "mainly": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "I speak with natives": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I study Spanish to travel to Spain on vacation": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "of course, I'm going because I want to celebrate your birthday": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "of course": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "for how long": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "birthday": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "to turn/complete (years)": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "tomorrow I have a Spanish meetup": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "tomorrow, in the morning, I have a class": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "this gift is for you": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "I study Spanish because I like it": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I'm going to walk through the park": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "why do you want to learn more vocabulary?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "to travel to Mexico I need to practice more": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "I'm not going to class because I'm sick": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "to have fun": ["aula::unidad_2", "skill::vocabulary", "priority::core"],
+    "It's important to leave early": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "Spanish songs": ["aula::unidad_2", "skill::vocabulary", "priority::extended"],
+    "the little chicks say": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "Do you want one more?": ["aula::unidad_2", "skill::phrases", "priority::core"],
+    "you understand me?": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "did I say it correctly?": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "I can also say...": ["aula::unidad_0", "skill::phrases", "priority::core"],
+    "Complete the correct question": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "I go with my friends to the restaurant to celebrate my birthday": ["aula::unidad_2", "skill::phrases", "priority::extended"],
+    "Do you know these festivals?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+
+    # ── Unidad 3: geography / hay / weather ───────────────────────────
+    "the morning": ["aula::unidad_3", "skill::vocabulary", "priority::core"],
+    "from where": ["aula::unidad_1", "skill::vocabulary", "priority::core"],
+    "Where are you now?": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "My city is neither small nor big": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "Is your city big or small?": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "Are you tired or energetic?": ["aula::unidad_5", "skill::phrases", "priority::extended"],
+    "Is your house near or far from the center?": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "My house is far from the center": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "Finally in Santiago, after a long journey": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Santiago, the second most important city of the island": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Santiago, the capital of the country with its snowy mountains": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is the Andes mountain range": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "palm trees": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "cable car": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "pollution": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "gentlemen": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "pilgrimage": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "ancient": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "It is the capital of the country": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "It is the most populated city of the three": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is a pilgrimage city": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It has UNESCO recognition": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "There are ancient coffee plantations nearby": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is a university city": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is the oldest city of the three": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is close to natural areas of interest": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "short time": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "the surroundings": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "known": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "visited": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "It is in the center of Chile": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "location": ["aula::unidad_3", "skill::vocabulary", "priority::core"],
+    "of all countries": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "How are the buildings in the city?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "eight years ago": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "approximately": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "97,000 inhabitants": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "wine production areas": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "To define: What are tacos?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "A typical food from Mexico": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What is mate?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "A typical drink from Argentina": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "To identify: What city is the capital of Peru?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Lima": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "Which/What ones": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "Which is the capital of Peru?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What are the official languages of Paraguay?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Spanish and Guarani": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "What is the climate?": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "How is the climate?": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "semi-arid": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "Vietnam is humid and tropical, or cold and semi-arid": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What is aijaco?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is a type of soup": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What is the typical drink?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Chicha. It is an alcoholic drink made from corn": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What are the most populated cities?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "How many inhabitants does the country have?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "More than 8 million": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Tikal is a unique place": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In Barcelona there is a very big football stadium": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In Mexico City there is a very famous square: El Zócalo": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In Paraguay there are two official languages": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In Costa Rica there are many natural parks": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In Chile there are many mountains": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In Venezuela there is oil / jungles": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In Spain there is no oil / jungles": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In Cambridge there are no mountains": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "Hay will never be used with definite articles": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "There is a book": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "There are books": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "There is a mountain": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "There are mountains": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "There is a problem": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "There are problems": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "There are clouds in the sky": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "I feel like it": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "beautiful black sand beaches": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "Pacific coast": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "the climate is very humid": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "we go by bus to Mexico": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "it rains in the afternoon almost every day": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Here everything is precise": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "they are incredible": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "the people are very gentle... everyone is very kind": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Tikal is very beautiful": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "they are on the Pacific coast": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "which is in the center of the country": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Tikal to visit some Mayan ruins that are in the jungle": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "There are some beautiful black sand beaches": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "There are five ancient temples and there are also palaces, squares": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "there is a very well-known market there that we want to see": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In my country there are many clouds": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In my country there is no sun": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "My country is historic": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "My country is in northwest Europe": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In my city there is a castle": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In my city there is no Korean BBQ": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "My city is flat": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "My city is in Essex": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "double-decker buses": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "The Sagrada Familia is in Spain, right?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Yes, it's in Barcelona": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What is bachata?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What are the most famous beaches of Cádiz?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What are the most typical products of Cuba?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What is flamenco?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is a dance": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "What is the smallest country in Central America?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is in Central America": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "The capital is San Juan": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is an island": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "There are very important archaeological remains": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "The currency is the American dollar": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "The capital is Managua": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is between the Atlantic Ocean and the Pacific Ocean": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It is in the Atlantic Ocean": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "There are two official languages: Spanish and English": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "The city of Granada is there": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In this map there are four things that don't correspond to Spain. What are they?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "There is no oil in Spain, no?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "My house is in Madrid": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "Everest is the highest mountain in the world": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It's sunny and hot": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In England there are many forests": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "In my city it rains a lot": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "Where are the Iguazu waterfalls?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "There are many white sand beaches in Cuba": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In Egypt there are many pyramids": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Venezuela has many different climates": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "It's not sunny, it's cloudy and very windy": ["aula::unidad_3", "skill::phrases", "priority::core"],
+    "different intensity": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "small mountains": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "Essex is in northeast England": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "Tikal is in Guatemala": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "The Galapagos Islands are in Ecuador": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "there is/there are (from haber)": ["aula::unidad_3", "skill::grammar", "priority::core"],
+    "In Thailand there are many beaches": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In Hong Kong there are two official languages": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In Canada there are forests": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "What are tacos?": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    # Weather phrases in the Phrases deck
+    "In Tenerife today it's hot and windy, five degrees (centigrade)": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In San Sebastian today it's cloudy and windy, nine degrees centigrade": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In Gothenburg, in summer it's sunny and not very cold": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "And in summer and autumn it rains a lot. In winter...": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In Tenerife, in summer it's sunny and not very cold and in summer and autumn and spring and autumn it doesn't rain much": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In Jaca, in winter it's cold and foggy and not very sunny": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In Colchester, in winter it's sunny and doesn't rain much in autumn and spring and in winter it rains very much and it's cold": ["aula::unidad_3", "skill::phrases", "priority::extended"],
+    "In my country there is no sun": ["aula::unidad_3", "skill::phrases", "priority::core"],
+
+    # ── Unidad 4: clothing / colors / demonstratives ──────────────────
+    "coffee (brown color)": ["aula::unidad_4", "skill::vocabulary", "priority::core"],
+    "colors": ["aula::unidad_4", "skill::vocabulary", "priority::core"],
+    "bright/vivid": ["aula::unidad_4", "skill::vocabulary", "priority::extended"],
+    "serious/dark": ["aula::unidad_4", "skill::vocabulary", "priority::extended"],
+    "I prefer serious colors": ["aula::unidad_4", "skill::phrases", "priority::core"],
+    "this sweater (masc.)": ["aula::unidad_4", "skill::grammar", "priority::core"],
+    "this t-shirt (fem.)": ["aula::unidad_4", "skill::grammar", "priority::core"],
+    "these shoes (masc.)": ["aula::unidad_4", "skill::grammar", "priority::core"],
+    "these sandals (fem.)": ["aula::unidad_4", "skill::grammar", "priority::core"],
+    "the shopping": ["aula::unidad_4", "skill::vocabulary", "priority::core"],
+    "What do I wear": ["aula::unidad_4", "skill::phrases", "priority::extended"],
+
+    # ── Unidad 5: personality / descriptions / family ─────────────────
+    "Good. It seems quite interesting": ["aula::unidad_5", "skill::phrases", "priority::extended"],
+    "She is a nice girl": ["aula::unidad_5", "skill::phrases", "priority::core"],
+    "open": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "closed": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "shy": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "serious": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "boring": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "fun": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "The Spanish teacher seems sociable to me": ["aula::unidad_5", "skill::phrases", "priority::extended"],
+    "Andrew seems like a very intelligent man to me": ["aula::unidad_5", "skill::phrases", "priority::extended"],
+    "My girlfriend seems like a very pretty and cheerful and fun and nice girl to me": ["aula::unidad_5", "skill::phrases", "priority::extended"],
+    # Family
+    "mother-in-law": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "father-in-law": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "sister-in-law": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "brother-in-law": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "daughter-in-law": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "son-in-law": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "grandson": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "granddaughter": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "niece": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "nephew": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "These are my children": ["aula::unidad_5", "skill::phrases", "priority::core"],
+    "These are my husband and my sister": ["aula::unidad_5", "skill::phrases", "priority::core"],
+    "neighbors": ["aula::unidad_5", "skill::vocabulary", "priority::extended"],
+    "My name is John, this is my brother. This is my niece. These are my mother and father, and these are my children": ["aula::unidad_5", "skill::phrases", "priority::core"],
+    # Physical descriptions
+    "How is he/she?": ["aula::unidad_5", "skill::phrases", "priority::core"],
+    "Carl has a beard and mustache": ["aula::unidad_5", "skill::phrases", "priority::core"],
+    "I am thin and young and brown-haired. I have short hair and gray eyes": ["aula::unidad_5", "skill::phrases", "priority::core"],
+    "You are thin and young and brown-haired. You have short hair and gray eyes": ["aula::unidad_5", "skill::phrases", "priority::core"],
+    "dark-haired (masc.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "dark-haired (fem.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "blonde (masc.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "blonde (fem.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "brown-haired (masc.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "brown-haired (fem.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "red-haired (masc.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "red-haired (fem.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "bald (masc.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "bald (fem.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "young": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "middle-aged": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "older": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "old (masc.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "old (fem.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "thin": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "fat": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "short": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "tall (fem.)": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "handsome": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "ugly": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "attractive": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "normal": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "beard": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "mustache": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "freckles": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "gray hair": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "dark hair": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "blonde hair": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "short hair": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "straight hair": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "long hair": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "curly hair": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "wavy hair": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "blue eyes": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "green eyes": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "brown eyes": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+    "gray eyes": ["aula::unidad_5", "skill::vocabulary", "priority::core"],
+
+    # ── Unidad 6: routines / time / frequency ─────────────────────────
+    "Every Wednesday, after class, I go home to sleep": ["aula::unidad_6", "skill::phrases", "priority::core"],
+    "Every Wednesday, after class, I go home to eat": ["aula::unidad_6", "skill::phrases", "priority::core"],
+    "I work in the mornings": ["aula::unidad_6", "skill::phrases", "priority::core"],
+    "every day": ["aula::unidad_6", "skill::vocabulary", "priority::core"],
+    "When it rains a lot, I put on water boots": ["aula::unidad_6", "skill::phrases", "priority::extended"],
+    "When the weather is good my family has a party": ["aula::unidad_6", "skill::phrases", "priority::extended"],
+    "When it's cold you all watch a movie": ["aula::unidad_6", "skill::phrases", "priority::extended"],
+    "When it's sunny I go to the beach": ["aula::unidad_6", "skill::phrases", "priority::extended"],
+    "When it's cold she walks through the mountain": ["aula::unidad_6", "skill::phrases", "priority::extended"],
+    "When there's a storm Pablo and Carla play cards": ["aula::unidad_6", "skill::phrases", "priority::extended"],
+    "When there's a storm you all watch a movie": ["aula::unidad_6", "skill::phrases", "priority::extended"],
+    "She likes your shoes": ["aula::unidad_6", "skill::grammar", "priority::core"],
+
+    # ── Unidad 7: food / restaurants ──────────────────────────────────
+    "I cook turkey meatballs": ["aula::unidad_7", "skill::phrases", "priority::extended"],
+    "cake": ["aula::unidad_7", "skill::vocabulary", "priority::core"],
+    "the food is also very good": ["aula::unidad_7", "skill::phrases", "priority::extended"],
+    "the tamale is a very typical dish": ["aula::unidad_7", "skill::phrases", "priority::extended"],
+    "but my favorite is pepián": ["aula::unidad_7", "skill::phrases", "priority::extended"],
+    "Can you give me a water please": ["aula::unidad_7", "skill::phrases", "priority::core"],
+    "Is there another way to say platito?": ["aula::unidad_7", "skill::phrases", "priority::extended"],
+    "My waiter didn't say plato, he said platito": ["aula::unidad_7", "skill::phrases", "priority::extended"],
+    "small plate": ["aula::unidad_7", "skill::vocabulary", "priority::extended"],
+
+    # ── Extra: past tense / future / advanced ─────────────────────────
+    "Hey, this afternoon I was thinking that you could go to the beach": ["aula::extra", "skill::phrases", "priority::extended"],
+    "I remember it's in January": ["aula::extra", "skill::phrases", "priority::extended"],
+    "I will arrive the morning of January 15th": ["aula::extra", "skill::phrases", "priority::extended"],
+    "With luck I'll sleep on the flight to minimize the jet lag": ["aula::extra", "skill::phrases", "priority::extended"],
+    "I will sleep": ["aula::extra", "skill::grammar", "priority::extended"],
+    "You will go": ["aula::extra", "skill::grammar", "priority::extended"],
+    "I have eaten the meat": ["aula::extra", "skill::grammar", "priority::extended"],
+    "Sometimes I get confused between forty and fifty": ["aula::extra", "skill::phrases", "priority::extended"],
+    "Not yet": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "Maybe / Perhaps": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "Go ahead / Come in": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "Only if you behave well": ["aula::extra", "skill::phrases", "priority::extended"],
+    "Love and luxury movies": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "Since November": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "I have been learning Spanish since November": ["aula::extra", "skill::phrases", "priority::extended"],
+    "since": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "I went on vacation to Gran Canaria": ["aula::extra", "skill::phrases", "priority::extended"],
+    "I visited the beach to walk": ["aula::extra", "skill::phrases", "priority::extended"],
+    "I was in Hong Kong": ["aula::extra", "skill::phrases", "priority::extended"],
+    "I worked as a waiter": ["aula::extra", "skill::phrases", "priority::extended"],
+    "I worked in Bangkok": ["aula::extra", "skill::phrases", "priority::extended"],
+    "I ordered a tortilla": ["aula::extra", "skill::phrases", "priority::extended"],
+    "raining": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+    "washing": ["aula::extra", "skill::vocabulary", "priority::extended"],
+    "freezing": ["aula::unidad_3", "skill::vocabulary", "priority::extended"],
+}
+
+
+# ---------------------------------------------------------------------------
+# 4. Main API
+# ---------------------------------------------------------------------------
+
+def get_tags_for_card(subdeck_name: str, english: str, spanish: str) -> list[str]:
+    """Return the full list of Anki tags for a card.
+
+    Resolution order:
+        1. Per-card override (PHRASE_TAG_OVERRIDES) for the Phrases deck
+        2. Core-subset promotion for Nationalities, Professions, Countries
+        3. Subdeck defaults (SUBDECK_TAG_DEFAULTS)
+
+    The legacy subdeck-based tag (e.g. ``phrases``, ``verb_conjugations``)
+    is always appended for backward compatibility.
+    """
+    legacy_tag = subdeck_name.lower().replace(" ", "_")
+
+    # 1. Per-card override for the Phrases deck
+    if subdeck_name == "Phrases" and english in PHRASE_TAG_OVERRIDES:
+        return PHRASE_TAG_OVERRIDES[english] + [legacy_tag]
+
+    # 2. Start with subdeck defaults
+    defaults = SUBDECK_TAG_DEFAULTS.get(subdeck_name, ["aula::extra", "skill::vocabulary", "priority::extended"])
+    tags = list(defaults)  # copy
+
+    # 3. Core-subset promotion
+    if subdeck_name == "Nationalities & Countries" and english in CORE_NATIONALITIES:
+        tags = [t for t in tags if not t.startswith("priority::")]
+        tags.append("priority::core")
+    elif subdeck_name == "Professions" and english in CORE_PROFESSIONS:
+        tags = [t for t in tags if not t.startswith("priority::")]
+        tags.append("priority::core")
+    elif subdeck_name == "Countries" and english in CORE_COUNTRIES:
+        tags = [t for t in tags if not t.startswith("priority::")]
+        tags.append("priority::core")
+
+    tags.append(legacy_tag)
+    return tags

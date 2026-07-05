@@ -14,6 +14,7 @@ import time  # <-- add near the top with other imports
 from decks_data import decks  # <-- Import your data dictionary
 
 import tts_audio  # embedded-audio generation + content-addressed cache
+import tag_mapping  # Aula Internacional Plus 1 unit/skill/priority tags
 
 ANKI_CONNECT_URL = "http://localhost:8765"
 
@@ -203,9 +204,9 @@ def filter_addable_notes_all_decks(decks_data):
             {
                 "deckName": full,
                 "modelName": MODEL_NAME,
-                "fields": {"English": en, "Spanish": es, "Tags": deck_name.lower().replace(" ", "_"), **audio_field_values(es)},
+                "fields": {"English": en, "Spanish": es, "Tags": ", ".join(tag_mapping.get_tags_for_card(deck_name, en, es)), **audio_field_values(es)},
                 "options": {"allowDuplicate": False},
-                "tags": [deck_name.lower().replace(" ", "_")],
+                "tags": tag_mapping.get_tags_for_card(deck_name, en, es),
             }
             for en, es in cards
         ]
@@ -223,9 +224,9 @@ def filter_addable_notes_all_decks(decks_data):
                     {
                         "deckName": f"{ROOT_DECK}::{deck_name}",
                         "modelName": MODEL_NAME,
-                        "fields": {"English": en, "Spanish": es, "Tags": deck_name.lower().replace(" ", "_"), **audio_field_values(es)},
+                        "fields": {"English": en, "Spanish": es, "Tags": ", ".join(tag_mapping.get_tags_for_card(deck_name, en, es)), **audio_field_values(es)},
                         "options": {"allowDuplicate": False},
-                        "tags": [deck_name.lower().replace(" ", "_")],
+                        "tags": tag_mapping.get_tags_for_card(deck_name, en, es),
                     }
                 )
             else:
@@ -304,6 +305,66 @@ def store_audio_media():
         invoke("multi", actions=batch)
     print("✅ Media upload complete.")
 
+def reconcile_existing_tags():
+    """Ensure existing notes have the latest tag mapping."""
+    note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
+    if not note_ids:
+        return
+        
+    # We need to map English text to its target deck to use the tag mapping
+    en_to_deck = {}
+    for deck_name, cards in decks.items():
+        for en, es in cards:
+            en_to_deck[en] = (deck_name, es)
+            
+    updates_fields = []
+    actions = []
+    
+    for info in invoke("notesInfo", notes=note_ids):
+        fields = info.get("fields", {})
+        en = fields.get("English", {}).get("value", "").strip()
+        
+        if en not in en_to_deck:
+            continue
+            
+        deck_name, es = en_to_deck[en]
+        desired_tags_list = tag_mapping.get_tags_for_card(deck_name, en, es)
+        desired_tags_str = ", ".join(desired_tags_list)
+        
+        # 1. Update the 'Tags' field if it's out of sync
+        current_tags_field = fields.get("Tags", {}).get("value", "")
+        if current_tags_field != desired_tags_str:
+            updates_fields.append({
+                "action": "updateNoteFields",
+                "params": {"note": {"id": info["noteId"], "fields": {"Tags": desired_tags_str}}}
+            })
+            
+        # 2. Update the Anki note tags if out of sync
+        current_note_tags = set(info.get("tags", []))
+        desired_note_tags = set(desired_tags_list)
+        
+        tags_to_add = " ".join(desired_note_tags - current_note_tags)
+        tags_to_remove = " ".join(current_note_tags - desired_note_tags)
+        
+        if tags_to_add:
+            actions.append({"action": "addTags", "params": {"notes": [info["noteId"]], "tags": tags_to_add}})
+        if tags_to_remove:
+            actions.append({"action": "removeTags", "params": {"notes": [info["noteId"]], "tags": tags_to_remove}})
+
+    if updates_fields:
+        print(f"🏷️  Updating 'Tags' field on {len(updates_fields)} existing note(s)...")
+        for batch in _chunked(updates_fields, 500):
+            invoke("multi", actions=batch)
+            
+    if actions:
+        # Actions has both addTags and removeTags so len might be up to 2x notes. 
+        print(f"🏷️  Updating Anki tags on {len(actions)} batch operations...")
+        for batch in _chunked(actions, 500):
+            invoke("multi", actions=batch)
+            
+    if updates_fields or actions:
+        print("✅ Existing tags updated.")
+
 
 def reconcile_existing_audio():
     """Populate audio fields on notes that predate the embedded-audio change."""
@@ -365,6 +426,9 @@ def main():
 
     # Backfill audio onto notes that already existed before this change.
     reconcile_existing_audio()
+
+    # Backfill the latest tags onto notes that already existed before this change.
+    reconcile_existing_tags()
 
     elapsed = time.time() - start_time
     minutes, seconds = divmod(elapsed, 60)
