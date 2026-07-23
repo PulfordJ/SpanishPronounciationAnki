@@ -91,6 +91,40 @@ SUBDECK_TAG_DEFAULTS: dict[str, list[str]] = {
     "Days of the Week": ["aula::unidad_6", "skill::vocabulary", "priority::core"],
     "Gustar & Encantar": ["aula::unidad_6", "skill::grammar", "priority::core"],
 
+    # ── Unidad 7: ¿Pescado o carne? ───────────────────────────────────
+    "Tapas & Spanish Dishes": ["aula::unidad_7", "skill::vocabulary", "priority::core"],
+    "Meat & Charcuterie": ["aula::unidad_7", "skill::vocabulary", "priority::core"],
+    "Fish & Seafood": ["aula::unidad_7", "skill::vocabulary", "priority::core"],
+    "Vegetables & Fruit": ["aula::unidad_7", "skill::vocabulary", "priority::core"],
+    "Dairy, Sweets & Condiments": ["aula::unidad_7", "skill::vocabulary", "priority::core"],
+    "Cereals & Legumes": ["aula::unidad_7", "skill::vocabulary", "priority::core"],
+    "Cooking Methods": ["aula::unidad_7", "skill::vocabulary", "priority::extended"],
+    "Tableware & Containers": ["aula::unidad_7", "skill::vocabulary", "priority::extended"],
+    "Food Quantities & Flavours": ["aula::unidad_7", "skill::grammar", "priority::core"],
+    "Drinks & Preferences": ["aula::unidad_7", "skill::vocabulary", "priority::extended"],
+    "Restaurant Phrases": ["aula::unidad_7", "skill::phrases", "priority::core"],
+    "Restaurant Dialogues": ["aula::unidad_7", "skill::dialogue", "priority::core"],
+
+    # ── Unidad 8: El barrio ideal ─────────────────────────────────────
+    "The Neighbourhood (El Barrio)": ["aula::unidad_8", "skill::vocabulary", "priority::core"],
+    "Neighbourhood Places & Services": ["aula::unidad_8", "skill::vocabulary", "priority::core"],
+    "Shops & Errands": ["aula::unidad_8", "skill::vocabulary", "priority::core"],
+    "City Descriptions": ["aula::unidad_8", "skill::phrases", "priority::extended"],
+    "Quantifiers (Countable & Uncountable)": ["aula::unidad_8", "skill::grammar", "priority::core"],
+    "Algún, Ningún & Nada de": ["aula::unidad_8", "skill::grammar", "priority::core"],
+    "Asking About Places Nearby": ["aula::unidad_8", "skill::dialogue", "priority::core"],
+    "Directions & Getting Around": ["aula::unidad_8", "skill::vocabulary", "priority::core"],
+    "Asking For Directions": ["aula::unidad_8", "skill::phrases", "priority::core"],
+    "Opinions & Impressions": ["aula::unidad_8", "skill::phrases", "priority::core"],
+
+    # ── Unidad 9: Salir con amigos / pretérito perfecto ───────────────
+    "Perfect Tense (Pretérito Perfecto)": ["aula::unidad_9", "skill::grammar", "priority::core"],
+    "Past Participles": ["aula::unidad_9", "skill::grammar", "priority::core"],
+    "Perfect Tense Conjugations": ["aula::unidad_9", "skill::grammar", "priority::extended"],
+    "Saber vs Poder": ["aula::unidad_9", "skill::grammar", "priority::core"],
+    "Life Changes & Mishaps": ["aula::unidad_9", "skill::vocabulary", "priority::extended"],
+    "City vs Country Life": ["aula::unidad_9", "skill::vocabulary", "priority::extended"],
+
     # ── Extra / mixed ─────────────────────────────────────────────────
     "Phrases": ["aula::extra", "skill::phrases", "priority::extended"],
     "Miscellaneous": ["aula::extra", "skill::vocabulary", "priority::extended"],
