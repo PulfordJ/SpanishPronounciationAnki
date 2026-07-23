@@ -1,0 +1,5 @@
+* text=auto eol=lf
+
+*.apkg binary
+*.pdf  binary
+*.mp3  binary
