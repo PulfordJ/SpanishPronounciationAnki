@@ -3,3 +3,9 @@ CLAUDE.md
 # Generated TTS audio (content-addressed cache; regenerated via tts_audio.py)
 tts_cache/
 tts_samples/*.mp3
+
+# Exported Anki decks (rebuilt via update_export_and_release.py)
+*.apkg
+
+# Reference material
+*.pdf
