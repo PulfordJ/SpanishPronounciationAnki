@@ -3279,6 +3279,9 @@ decks = {
         ("at night", "de la noche"),
         ("in the early hours / after midnight", "de la madrugada"),
         ("I have a flight at three in the morning", "Tengo un vuelo a las tres de la madrugada"),
+        ("midnight", "la medianoche"),
+        ("at midnight", "a medianoche"),
+        ("It's midnight", "Es medianoche"),
 
         # One example per time phrase
         ("It's exactly two o'clock", "Son las dos en punto"),
