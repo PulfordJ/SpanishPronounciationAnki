@@ -7,5 +7,15 @@ tts_samples/*.mp3
 # Exported Anki decks (rebuilt via update_export_and_release.py)
 *.apkg
 
+# Built Anki add-on bundles (rebuilt via build_addon.py)
+*.ankiaddon
+
 # Reference material
 *.pdf
+
+# Python bytecode
+__pycache__/
+
+# Tooling / editor state
+.direnv/
+.idea/
