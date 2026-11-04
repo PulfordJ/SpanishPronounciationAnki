@@ -15,6 +15,7 @@ from decks_data import decks  # <-- Import your data dictionary
 
 import tts_audio  # embedded-audio generation + content-addressed cache
 import tag_mapping  # Aula Internacional Plus 1 unit/skill/priority tags
+import card_migrations  # renamed / retired English fronts for notes already in Anki
 
 ANKI_CONNECT_URL = "http://localhost:8765"
 
@@ -366,6 +367,84 @@ def reconcile_existing_tags():
         print("✅ Existing tags updated.")
 
 
+def _notes_by_front():
+    """English front -> note ids, for every note of our model."""
+    note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
+    by_front = {}
+    for info in invoke("notesInfo", notes=note_ids) if note_ids else []:
+        en = info.get("fields", {}).get("English", {}).get("value", "").strip()
+        by_front.setdefault(en, []).append(info["noteId"])
+    return by_front
+
+
+def apply_card_migrations():
+    """Rename / retire existing notes listed in card_migrations.py.
+
+    Must run before cards are added: the add step matches notes on the English
+    field, so a renamed front would otherwise be added as a second note and the
+    old note (with its review history) left behind.
+    """
+    by_front = _notes_by_front()
+
+    retire = [(front, nid) for front in sorted(card_migrations.RETIRED_FRONTS) for nid in by_front.get(front, [])]
+    if retire:
+        print(f"🗑️  Deleting {len(retire)} retired back-to-front duplicate note(s):")
+        for front, _ in retire:
+            print(f"   • {front}")
+        invoke("deleteNotes", notes=[nid for _, nid in retire])
+
+    renames = []
+    for old, new in card_migrations.RENAMED_FRONTS.items():
+        ids = by_front.get(old, [])
+        if not ids:
+            continue  # already migrated, or never added
+        if new in by_front or len(ids) > 1:
+            print(f"   ⚠️ not renaming {old!r} -> {new!r}: target exists or front is ambiguous")
+            continue
+        renames.append({"action": "updateNoteFields", "params": {"note": {"id": ids[0], "fields": {"English": new}}}})
+
+    if renames:
+        print(f"✏️  Renaming {len(renames)} existing note(s) in place (review history kept)...")
+        for batch in _chunked(renames, 500):
+            invoke("multi", actions=batch)
+
+
+def reconcile_existing_spanish():
+    """Sync the Spanish field (and its audio) of existing notes with decks_data.
+
+    The add step skips notes whose English already exists, so without this a
+    corrected Spanish answer in decks_data.py never reaches cards already in Anki.
+    """
+    en_to_es, ambiguous = {}, set()
+    for cards in decks.values():
+        for en, es in cards:
+            if en_to_es.setdefault(en, es) != es:
+                ambiguous.add(en)
+    for en in sorted(ambiguous):
+        del en_to_es[en]
+        print(f"   ⚠️ {en!r} has different Spanish in two decks; leaving its Spanish unchanged")
+
+    note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
+    if not note_ids:
+        return
+    updates = []
+    for info in invoke("notesInfo", notes=note_ids):
+        fields = info.get("fields", {})
+        en = fields.get("English", {}).get("value", "").strip()
+        desired = en_to_es.get(en)
+        if desired is None or fields.get("Spanish", {}).get("value", "").strip() == desired.strip():
+            continue
+        new_fields = {"Spanish": desired, **audio_field_values(desired)}
+        updates.append({"action": "updateNoteFields", "params": {"note": {"id": info["noteId"], "fields": new_fields}}})
+
+    if not updates:
+        return
+    print(f"🩹 Updating Spanish on {len(updates)} existing note(s)...")
+    for batch in _chunked(updates, 500):
+        invoke("multi", actions=batch)
+    print("✅ Existing Spanish updated.")
+
+
 def reconcile_existing_audio():
     """Populate audio fields on notes that predate the embedded-audio change."""
     note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
@@ -417,12 +496,18 @@ def main():
     create_decks()
     store_audio_media()
 
+    # Rename/retire changed fronts first so they aren't re-added as new notes.
+    apply_card_migrations()
+
     print("\n🔍 Checking which cards can be added...")
     filtered = filter_addable_notes_all_decks(decks)
     print("✅ Duplicate filtering complete.")
 
     print("\n🧩 Adding cards in bulk...")
     add_notes_all_decks(filtered)
+
+    # Push corrected Spanish answers onto notes that already exist.
+    reconcile_existing_spanish()
 
     # Backfill audio onto notes that already existed before this change.
     reconcile_existing_audio()
