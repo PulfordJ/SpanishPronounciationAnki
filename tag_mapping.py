@@ -144,6 +144,10 @@ SUBDECK_TAG_DEFAULTS: dict[str, list[str]] = {
     "A2 U2 - Cinema & Achievements": ["aula2::unidad_2", "skill::vocabulary", "priority::core"],
     "A2 U2 - Famous People & Discoveries": ["aula2::unidad_2", "skill::phrases", "priority::core"],
     "A2 U2 - Numbers 1,000 to 9,000": ["aula2::unidad_2", "skill::vocabulary", "priority::core"],
+    "A2 U1 - Emotions & Moods": ["aula2::unidad_1", "skill::vocabulary", "priority::core"],
+    "A2 U1 - Class Conversations": ["aula2::unidad_1", "skill::dialogue", "priority::core"],
+    "A2 U2 - Past Tense Practice": ["aula2::unidad_2", "skill::phrases", "priority::core"],
+    "Home & Where Things Are": ["aula::extra", "skill::vocabulary", "priority::core"],
 }
 
 
