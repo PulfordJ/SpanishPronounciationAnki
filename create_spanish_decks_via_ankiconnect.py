@@ -367,6 +367,19 @@ def reconcile_existing_tags():
         print("✅ Existing tags updated.")
 
 
+def _run_checked(actions, size=500):
+    """Run actions through `multi` in batches and fail loudly on any error.
+
+    `multi` doesn't raise when a sub-action fails; it returns
+    {"result": None, "error": "..."} in that action's slot instead.
+    """
+    for batch in _chunked(actions, size):
+        results = invoke("multi", actions=batch)
+        errors = [r["error"] for r in results if isinstance(r, dict) and r.get("error")]
+        if errors:
+            raise Exception(f"{len(errors)} of {len(batch)} AnkiConnect actions failed, first error: {errors[0]}")
+
+
 def _notes_by_front():
     """English front -> note ids, for every note of our model."""
     note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
@@ -405,8 +418,7 @@ def apply_card_migrations():
 
     if renames:
         print(f"✏️  Renaming {len(renames)} existing note(s) in place (review history kept)...")
-        for batch in _chunked(renames, 500):
-            invoke("multi", actions=batch)
+        _run_checked(renames)
 
 
 def reconcile_existing_spanish():
@@ -440,8 +452,7 @@ def reconcile_existing_spanish():
     if not updates:
         return
     print(f"🩹 Updating Spanish on {len(updates)} existing note(s)...")
-    for batch in _chunked(updates, 500):
-        invoke("multi", actions=batch)
+    _run_checked(updates)
     print("✅ Existing Spanish updated.")
 
 
