@@ -142,6 +142,8 @@ SUBDECK_TAG_DEFAULTS: dict[str, list[str]] = {
     "A2 U2 - Irregular Preterite": ["aula2::unidad_2", "skill::grammar", "priority::core"],
     "A2 U2 - Past Time Markers": ["aula2::unidad_2", "skill::grammar", "priority::core"],
     "A2 U2 - Cinema & Achievements": ["aula2::unidad_2", "skill::vocabulary", "priority::core"],
+    "A2 U2 - Famous People & Discoveries": ["aula2::unidad_2", "skill::phrases", "priority::core"],
+    "A2 U2 - Numbers 1,000 to 9,000": ["aula2::unidad_2", "skill::vocabulary", "priority::core"],
 }
 
 
