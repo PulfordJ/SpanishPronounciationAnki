@@ -7,6 +7,7 @@ Maps every Anki card to hierarchical tags aligned with the textbook
 
 Tag hierarchy:
     aula::unidad_0 … aula::unidad_9, aula::extra   — textbook unit
+    aula2::unidad_1, aula2::unidad_2               — Aula Internacional Plus 2 (A2) unit
     skill::vocabulary / grammar / phrases / pronunciation / dialogue
     priority::core / extended / reference
 
@@ -132,6 +133,15 @@ SUBDECK_TAG_DEFAULTS: dict[str, list[str]] = {
     "Miscellaneous": ["aula::extra", "skill::vocabulary", "priority::extended"],
     "Preterite Verb Conjugations": ["aula::extra", "skill::grammar", "priority::extended"],
     "Animals & Nature": ["aula::extra", "skill::vocabulary", "priority::extended"],
+
+    # ── Aula Internacional Plus 2 (A2) ────────────────────────────────
+    "A2 U1 - Learning Habits & Advice": ["aula2::unidad_1", "skill::phrases", "priority::core"],
+    "A2 U1 - Feelings & Difficulties": ["aula2::unidad_1", "skill::phrases", "priority::core"],
+    "A2 U1 - Duration (Desde / Desde hace)": ["aula2::unidad_1", "skill::grammar", "priority::core"],
+    "A2 U2 - Life Events (Preterite)": ["aula2::unidad_2", "skill::phrases", "priority::core"],
+    "A2 U2 - Irregular Preterite": ["aula2::unidad_2", "skill::grammar", "priority::core"],
+    "A2 U2 - Past Time Markers": ["aula2::unidad_2", "skill::grammar", "priority::core"],
+    "A2 U2 - Cinema & Achievements": ["aula2::unidad_2", "skill::vocabulary", "priority::core"],
 }
 
 
