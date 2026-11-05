@@ -7,7 +7,7 @@ Maps every Anki card to hierarchical tags aligned with the textbook
 
 Tag hierarchy:
     aula::unidad_0 … aula::unidad_9, aula::extra   — textbook unit
-    aula2::unidad_1, aula2::unidad_2               — Aula Internacional Plus 2 (A2) unit
+    aula2::unidad_1 … aula2::unidad_3              — Aula Internacional Plus 2 (A2) unit
     skill::vocabulary / grammar / phrases / pronunciation / dialogue
     priority::core / extended / reference
 
@@ -148,6 +148,9 @@ SUBDECK_TAG_DEFAULTS: dict[str, list[str]] = {
     "A2 U1 - Class Conversations": ["aula2::unidad_1", "skill::dialogue", "priority::core"],
     "A2 U2 - Past Tense Practice": ["aula2::unidad_2", "skill::phrases", "priority::core"],
     "Home & Where Things Are": ["aula::extra", "skill::vocabulary", "priority::core"],
+    "A2 U3 - Describing People": ["aula2::unidad_3", "skill::vocabulary", "priority::core"],
+    "A2 U3 - Relationships (Caer, Llevarse)": ["aula2::unidad_3", "skill::phrases", "priority::core"],
+    "A2 U3 - Identifying People (Ese, Aquel, El que)": ["aula2::unidad_3", "skill::grammar", "priority::core"],
 }
 
 
